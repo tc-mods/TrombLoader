@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BaboonAPI.Hooks.Tracks;
 using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using TrombLoader.CustomTracks;
 using UnityEngine;
@@ -17,9 +18,13 @@ namespace TrombLoader
     public class Plugin : BaseUnityPlugin
     {
         public static Plugin Instance;
+        public ConfigEntry<int> beatsToShow;
 
         private void Awake()
         {
+            var customFile = new ConfigFile(Path.Combine(Paths.ConfigPath, "TrombLoader.cfg"), true);
+            beatsToShow = customFile.Bind("General", "Note Display Limit", 64, "The maximum amount of notes displayed on screen at once.");
+
             Instance = this;
             LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
             // var harmony = new Harmony(PluginInfo.PLUGIN_GUID);
