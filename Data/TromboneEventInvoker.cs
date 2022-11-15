@@ -29,7 +29,7 @@ namespace TrombLoader.Data
 
         public void LateUpdate()
         {
-            if (_controller == null) return;
+            if (ReferenceEquals(_controller, null)) return;
 
             if (_controller.bgindex != previousBGDataIndex)
             {
