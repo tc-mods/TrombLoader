@@ -220,13 +220,18 @@ public class CustomTrack : TromboneTrack
             {
                 BackgroundHelper.ApplyImage(bg, imagePath);
             }
-            
+
+            controller.tickontempo = false;
+
             // Apply background effect
             controller.doBGEffect(_parent.backgroundMovement);
         }
 
         public void Dispose()
         {
+            // force kill all old puppets
+            Globals.Tromboners.Clear();
+
             if (_backgroundBundle != null)
             {
                 _backgroundBundle.Unload(false);

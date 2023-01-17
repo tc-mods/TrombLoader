@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using BaboonAPI.Hooks.Tracks;
 using Newtonsoft.Json;
 using TrombLoader.Helpers;
@@ -13,7 +14,11 @@ public class TrackLoader: TrackRegistrationEvent.Listener
     public IEnumerable<TromboneTrack> OnRegisterTracks()
     {
         CreateMissingDirectories();
-        var songs = Directory.GetDirectories(Globals.GetCustomSongsPath());
+
+        var songs = Directory.GetFiles(Globals.GetCustomSongsPath(), "song.tmb", SearchOption.AllDirectories)
+            .Concat(Directory.GetFiles(BepInEx.Paths.PluginPath, "song.tmb", SearchOption.AllDirectories))
+            .Select(i => Path.GetDirectoryName(i));
+
         foreach (var songFolder in songs)
         {
             var chartPath = songFolder + "/" + Globals.defaultChartName;
@@ -22,7 +27,17 @@ public class TrackLoader: TrackRegistrationEvent.Listener
             using var stream = File.OpenText(chartPath);
             using var reader = new JsonTextReader(stream);
 
-            var customLevel = _serializer.Deserialize<CustomTrack>(reader);
+            CustomTrack customLevel;
+            try 
+            {
+                customLevel = _serializer.Deserialize<CustomTrack>(reader);
+            }
+            catch
+            {
+                Plugin.LogWarning($"Unable to deserialize JSON of custom chart: {chartPath}");
+                continue;
+            }
+
             if (customLevel == null) continue;
 
             Plugin.LogDebug($"Found custom chart: {customLevel.trackref}");
