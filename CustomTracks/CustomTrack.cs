@@ -211,7 +211,7 @@ public class CustomTrack : TromboneTrack
             {
                 modelCam.clearFlags = CameraClearFlags.Depth;
             }
-            
+
             if (videoPath != null)
             {
                 BackgroundHelper.ApplyVideo(bg, controller, videoPath);
@@ -219,6 +219,11 @@ public class CustomTrack : TromboneTrack
             else if (imagePath != null)
             {
                 BackgroundHelper.ApplyImage(bg, imagePath);
+            }
+            else
+            {
+                // Set up tromboners for trombackgrounds
+                BackgroundHelper.SetUpPuppets(controller, bg);
             }
 
             controller.tickontempo = false;
@@ -229,9 +234,6 @@ public class CustomTrack : TromboneTrack
 
         public void Dispose()
         {
-            // force kill all old puppets
-            Globals.Tromboners.Clear();
-
             if (_backgroundBundle != null)
             {
                 _backgroundBundle.Unload(false);
