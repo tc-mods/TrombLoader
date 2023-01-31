@@ -115,6 +115,14 @@ public class CustomTrack : TromboneTrack
         return true;
     }
 
+    public enum BackgroundType
+    {
+        Image,
+        Video,
+        Trombackground,
+        Empty
+    }
+
     public class LoadedCustomTrack : LoadedTromboneTrack
     {
         private CustomTrack _parent;
@@ -122,6 +130,7 @@ public class CustomTrack : TromboneTrack
 
         private string videoPath = null;
         private string imagePath = null;
+        private BackgroundType _backgroundType = BackgroundType.Empty;
 
         public LoadedCustomTrack(CustomTrack parent)
         {
@@ -155,6 +164,7 @@ public class CustomTrack : TromboneTrack
             var songPath = _parent.folderPath;
             if (File.Exists(Path.Combine(songPath, "bg.trombackground")))
             {
+                _backgroundType = BackgroundType.Trombackground;
                 _backgroundBundle = AssetBundle.LoadFromFile(Path.Combine(songPath, "bg.trombackground"));
                 var bg = _backgroundBundle.LoadAsset<GameObject>("assets/_background.prefab");
                 var managers = bg.GetComponentsInChildren<TromboneEventManager>();
@@ -186,6 +196,7 @@ public class CustomTrack : TromboneTrack
                 var possibleVideoPath = Path.Combine(songPath, "bg.mp4");
                 if (File.Exists(possibleVideoPath))
                 {
+                    _backgroundType = BackgroundType.Video;
                     videoPath = possibleVideoPath;
                     return bg;
                 }
@@ -193,13 +204,15 @@ public class CustomTrack : TromboneTrack
                 var spritePath = Path.Combine(songPath, "bg.png");
                 if (File.Exists(spritePath))
                 {
+                    _backgroundType = BackgroundType.Image;
                     imagePath = spritePath;
                     return bg;
                 }
-            }
 
-            Plugin.LogError("Failed to load background");
-            return new GameObject();
+                Plugin.LogWarning($"No background for track {_parent.trackref}");
+                _backgroundType = BackgroundType.Empty;
+                return bg;
+            }
         }
 
         public void SetUpBackgroundDelayed(BGController controller, GameObject bg)
@@ -212,18 +225,27 @@ public class CustomTrack : TromboneTrack
                 modelCam.clearFlags = CameraClearFlags.Depth;
             }
 
-            if (videoPath != null)
+            switch (_backgroundType)
             {
-                BackgroundHelper.ApplyVideo(bg, controller, videoPath);
-            }
-            else if (imagePath != null)
-            {
-                BackgroundHelper.ApplyImage(bg, imagePath);
-            }
-            else
-            {
-                // Set up tromboners for trombackgrounds
-                BackgroundHelper.SetUpPuppets(controller, bg);
+                case BackgroundType.Image:
+                    BackgroundHelper.ApplyImage(bg, imagePath);
+                    break;
+                case BackgroundType.Video:
+                    BackgroundHelper.ApplyVideo(bg, controller, videoPath);
+                    break;
+                case BackgroundType.Trombackground:
+                    // Set up tromboners for trombackgrounds
+                    BackgroundHelper.SetUpPuppets(controller, bg);
+
+                    // Preload videos
+                    foreach (var videoPlayer in bg.GetComponentsInChildren<VideoPlayer>())
+                    {
+                        videoPlayer.Prepare();
+                    }
+                    break;
+                case BackgroundType.Empty:
+                    BackgroundHelper.DisableBackground(bg);
+                    break;
             }
 
             controller.tickontempo = false;
