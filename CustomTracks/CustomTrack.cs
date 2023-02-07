@@ -5,10 +5,8 @@ using System.Linq;
 using BaboonAPI.Hooks.Tracks;
 using Newtonsoft.Json;
 using TrombLoader.Data;
-using HarmonyLib;
-using TrombLoader.Helpers;
+using TrombLoader.CustomTracks.Backgrounds;
 using UnityEngine;
-using UnityEngine.Video;
 
 namespace TrombLoader.CustomTracks;
 
@@ -108,7 +106,31 @@ public class CustomTrack : TromboneTrack
 
     public LoadedTromboneTrack LoadTrack()
     {
-        return new LoadedCustomTrack(this);
+        return new LoadedCustomTrack(this, LoadBackground());
+    }
+
+    private AbstractBackground LoadBackground()
+    {
+        if (File.Exists(Path.Combine(folderPath, "bg.trombackground")))
+        {
+            var bundle = AssetBundle.LoadFromFile(Path.Combine(folderPath, "bg.trombackground"));
+            return new CustomBackground(bundle, folderPath);
+        }
+        
+        var possibleVideoPath = Path.Combine(folderPath, "bg.mp4");
+        if (File.Exists(possibleVideoPath))
+        {
+            return new VideoBackground(possibleVideoPath);
+        }
+
+        var spritePath = Path.Combine(folderPath, "bg.png");
+        if (File.Exists(spritePath))
+        {
+            return new ImageBackground(spritePath);
+        }
+
+        Plugin.LogWarning($"No background for track {trackref}");
+        return new EmptyBackground();
     }
 
     public bool IsVisible()
@@ -118,15 +140,13 @@ public class CustomTrack : TromboneTrack
 
     public class LoadedCustomTrack : LoadedTromboneTrack
     {
-        private CustomTrack _parent;
-        private AssetBundle _backgroundBundle;
+        private readonly CustomTrack _parent;
+        private readonly AbstractBackground _background;
 
-        private string videoPath = null;
-        private string imagePath = null;
-
-        public LoadedCustomTrack(CustomTrack parent)
+        public LoadedCustomTrack(CustomTrack parent, AbstractBackground background)
         {
             _parent = parent;
+            _background = background;
         }
 
         public TrackAudio LoadAudio()
@@ -153,81 +173,7 @@ public class CustomTrack : TromboneTrack
 
         public GameObject LoadBackground(BackgroundContext ctx)
         {
-            var songPath = _parent.folderPath;
-            if (File.Exists(Path.Combine(songPath, "bg.trombackground")))
-            {
-                _backgroundBundle = AssetBundle.LoadFromFile(Path.Combine(songPath, "bg.trombackground"));
-                var bg = _backgroundBundle.LoadAsset<GameObject>("assets/_background.prefab");
-
-                // MacOS Shader Handling
-                // May need to be expanded to other platforms eventually, but for now only check for invalid shaders on mac
-                // TODO: Handle custom shaders and the bundle that TrombLoaderBackgroundProject will eventually export
-                if (Application.platform == RuntimePlatform.OSXPlayer)
-                {
-                    foreach (var renderer in bg.GetComponentsInChildren<Renderer>(true))
-                    {
-                        foreach (var material in renderer.sharedMaterials)
-                        {
-                            if (material == null || material.shader == null || material.shader.isSupported) continue;
-
-                            Shader shader;
-                            if (Plugin.Instance.ShaderAssets.TryGetValue(material.shader.name, out shader))
-                            {
-                                // Shader exists and is cached, so *hopefully* it's the same and can be swapped out with no ill effects.
-                                material.shader = shader;
-                            }
-                            else
-                            {
-                                // TODO: Handle more gracefully. Maybe replace with a default shader.
-                                Plugin.LogDebug($"Could not find shader on {renderer.gameObject.name} ({material.shader.name})");
-                            }
-                        }
-                    }
-                }
-
-                var managers = bg.GetComponentsInChildren<TromboneEventManager>();
-                foreach (var eventManager in managers)
-                {
-                    eventManager.DeserializeAllGenericEvents();
-                }
-
-                var invoker = bg.AddComponent<TromboneEventInvoker>();
-                invoker.InitializeInvoker(ctx.controller, managers);
-
-                foreach (var videoPlayer in bg.GetComponentsInChildren<VideoPlayer>())
-                {
-                    if (videoPlayer.url == null || !videoPlayer.url.Contains("SERIALIZED_OUTSIDE_BUNDLE")) continue;
-                    var videoName = videoPlayer.url.Replace("SERIALIZED_OUTSIDE_BUNDLE/", "");
-                    var clipURL = Path.Combine(songPath, videoName);
-                    videoPlayer.url = clipURL;
-                }
-
-                BackgroundHelper.ApplyBackgroundTransforms(ctx.controller, bg);
-
-                return bg;
-            }
-            else
-            {
-                _backgroundBundle = AssetBundle.LoadFromFile($"{Application.streamingAssetsPath}/trackassets/ballgame");
-                var bg = _backgroundBundle.LoadAsset<GameObject>("BGCam_ballgame");
-
-                var possibleVideoPath = Path.Combine(songPath, "bg.mp4");
-                if (File.Exists(possibleVideoPath))
-                {
-                    videoPath = possibleVideoPath;
-                    return bg;
-                }
-
-                var spritePath = Path.Combine(songPath, "bg.png");
-                if (File.Exists(spritePath))
-                {
-                    imagePath = spritePath;
-                    return bg;
-                }
-            }
-
-            Plugin.LogError("Failed to load background");
-            return new GameObject();
+            return _background.Load(ctx);
         }
 
         public void SetUpBackgroundDelayed(BGController controller, GameObject bg)
@@ -240,19 +186,7 @@ public class CustomTrack : TromboneTrack
                 modelCam.clearFlags = CameraClearFlags.Depth;
             }
 
-            if (videoPath != null)
-            {
-                BackgroundHelper.ApplyVideo(bg, controller, videoPath);
-            }
-            else if (imagePath != null)
-            {
-                BackgroundHelper.ApplyImage(bg, imagePath);
-            }
-            else
-            {
-                // Set up tromboners for trombackgrounds
-                BackgroundHelper.SetUpPuppets(controller, bg);
-            }
+            _background.SetUpBackground(controller, bg);
 
             controller.tickontempo = false;
 
@@ -262,10 +196,7 @@ public class CustomTrack : TromboneTrack
 
         public void Dispose()
         {
-            if (_backgroundBundle != null)
-            {
-                _backgroundBundle.Unload(false);
-            }
+            _background.Dispose();
         }
 
         public string trackref => _parent.trackref;
