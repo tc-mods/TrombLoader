@@ -15,14 +15,6 @@ public class BackgroundPuppetController : MonoBehaviour
         Tromboners = new List<Tromboner>();
     }
 
-    public void StartSong(float delay)
-    {
-        foreach (var tromboner in Tromboners)
-        {
-            LeanTween.scaleY(tromboner.gameObject, 1f, 0.5f).setEaseOutBounce().setDelay(delay);
-        }
-    }
-
     public void StartPuppetBob(float bob)
     {
         foreach (var tromboner in Tromboners)

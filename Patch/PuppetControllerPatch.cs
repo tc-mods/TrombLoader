@@ -8,30 +8,6 @@ using TrombLoader.Data;
 namespace TrombLoader.Patch
 {
     [HarmonyPatch(typeof(GameController))]
-    [HarmonyPatch("startSong")]
-    public class GameControllerStartSongPatch
-    {
-        static void DoStartSong(GameController controller, float delay)
-        {
-            var bg = controller.bgcontroller.fullbgobject;
-            var puppetController = bg.GetComponent<BackgroundPuppetController>();
-            if (puppetController != null) puppetController.StartSong(delay);
-        }
-
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            return new CodeMatcher(instructions)
-                .End() // position = last ret, insert before
-                .InsertAndAdvance(
-                    new CodeInstruction(OpCodes.Ldarg_0),
-                    new CodeInstruction(OpCodes.Ldloc_1),
-                    CodeInstruction.Call(typeof(GameControllerStartSongPatch), nameof(DoStartSong))
-                )
-                .InstructionEnumeration();
-        }
-    }
-
-    [HarmonyPatch(typeof(GameController))]
     [HarmonyPatch("startDance")]
     public class GameControllerStartDancePatch
     {
