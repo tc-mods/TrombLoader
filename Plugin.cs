@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using BaboonAPI.Hooks.Initializer;
 using BaboonAPI.Hooks.Tracks;
@@ -9,7 +8,6 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using TrombLoader.CustomTracks;
-using TrombLoader.Patch;
 using TrombLoader.Helpers;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -18,7 +16,7 @@ using UnityEngine.SceneManagement;
 namespace TrombLoader
 {
     [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
-    [BepInDependency("ch.offbeatwit.baboonapi.plugin", "2.0.0")]
+    [BepInDependency("ch.offbeatwit.baboonapi.plugin", "2.0.1")]
     public class Plugin : BaseUnityPlugin
     {
         public static Plugin Instance;
@@ -63,7 +61,7 @@ namespace TrombLoader
             {
                 yield return www.error;
             }
-            else 
+            else
             {
                 callback?.Invoke();
                 yield return DownloadHandlerAudioClip.GetContent(www);
