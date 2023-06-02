@@ -14,6 +14,8 @@ namespace TrombLoader.CustomTracks.Backgrounds;
 public class CustomBackground : AbstractBackground
 {
     private string _songPath;
+    private GameObject _background;
+    private List<VideoPlayer> _pausedVideoPlayers = new();
 
     public CustomBackground(AssetBundle bundle, string songPath) : base(bundle)
     {
@@ -102,6 +104,7 @@ public class CustomBackground : AbstractBackground
     public override void SetUpBackground(BGController controller, GameObject bg)
     {
         var gameController = controller.gamecontroller;
+        _background = bg;
 
         foreach (var videoPlayer in bg.GetComponentsInChildren<VideoPlayer>())
         {
@@ -164,6 +167,57 @@ public class CustomBackground : AbstractBackground
                 tromboner.controller.show_rainbow = true;
             }
         }
+    }
+
+    public override bool CanResume => true;
+
+    public override void OnPause()
+    {
+        foreach (var animator in _background.GetComponentsInChildren<Animator>())
+        {
+            animator.enabled = false;
+        }
+
+        foreach (var animation in _background.GetComponentsInChildren<Animation>())
+        {
+            animation.enabled = false;
+        }
+        
+        foreach (var videoPlayer in _background.GetComponentsInChildren<VideoPlayer>())
+        {
+            if (videoPlayer.isPlaying)
+            {
+                videoPlayer.Pause();
+                _pausedVideoPlayers.Add(videoPlayer);
+            }
+        }
+    }
+
+    public override void OnResume()
+    {
+        foreach (var animator in _background.GetComponentsInChildren<Animator>())
+        {
+            animator.enabled = true;
+        }
+        
+        foreach (var animation in _background.GetComponentsInChildren<Animation>())
+        {
+            animation.enabled = true;
+        }
+
+        foreach (var videoPlayer in _pausedVideoPlayers)
+        {
+            videoPlayer.Play();
+        }
+
+        _pausedVideoPlayers.Clear();
+    }
+
+    public override void Dispose()
+    {
+        _background = null;
+        _pausedVideoPlayers.Clear();
+        base.Dispose();
     }
 
     private void LoadShaderBundle(GameObject bg)

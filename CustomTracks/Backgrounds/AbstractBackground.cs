@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TrombLoader.CustomTracks.Backgrounds;
 
-public abstract class AbstractBackground : IDisposable
+public abstract class AbstractBackground : IDisposable, PauseAware
 {
     protected AssetBundle Bundle;
 
@@ -17,7 +17,11 @@ public abstract class AbstractBackground : IDisposable
 
     public abstract void SetUpBackground(BGController controller, GameObject bg);
 
-    public void Dispose()
+    public abstract void OnPause();
+    public abstract void OnResume();
+    public abstract bool CanResume { get; }
+
+    public virtual void Dispose()
     {
         if (Bundle != null)
         {

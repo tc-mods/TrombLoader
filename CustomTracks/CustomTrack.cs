@@ -72,7 +72,7 @@ public class CustomTrack : TromboneTrack
         return true;
     }
 
-    public class LoadedCustomTrack : LoadedTromboneTrack
+    public class LoadedCustomTrack : LoadedTromboneTrack, PauseAware
     {
         private readonly CustomTrack _parent;
         private readonly AbstractBackground _background;
@@ -127,6 +127,10 @@ public class CustomTrack : TromboneTrack
             // Apply background effect
             controller.doBGEffect(_parent._data.backgroundMovement);
         }
+
+        public bool CanResume => _background.CanResume;
+        public void OnPause() => _background.OnPause();
+        public void OnResume() => _background.OnResume();
 
         public void Dispose()
         {

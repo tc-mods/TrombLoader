@@ -7,6 +7,7 @@ namespace TrombLoader.CustomTracks.Backgrounds;
 public class VideoBackground : HijackedBackground
 {
     private readonly string _videoPath;
+    private VideoPlayer _videoPlayer;
 
     public VideoBackground(string videoPath)
     {
@@ -24,21 +25,33 @@ public class VideoBackground : HijackedBackground
         pc.gameObject.SetActive(true);
         pc.GetComponent<SpriteRenderer>().color = Color.black;
 
-        var videoPlayer = pc.GetComponent<VideoPlayer>() ?? pc.gameObject.AddComponent<VideoPlayer>();
+        _videoPlayer = pc.GetComponent<VideoPlayer>() ?? pc.gameObject.AddComponent<VideoPlayer>();
 
-        videoPlayer.url = _videoPath;
-        videoPlayer.isLooping = true;
-        videoPlayer.playOnAwake = false;
-        videoPlayer.skipOnDrop = true;
-        videoPlayer.renderMode = VideoRenderMode.CameraNearPlane;
-        videoPlayer.targetCamera = bg.transform.GetComponent<Camera>();
+        _videoPlayer.url = _videoPath;
+        _videoPlayer.isLooping = true;
+        _videoPlayer.playOnAwake = false;
+        _videoPlayer.skipOnDrop = true;
+        _videoPlayer.renderMode = VideoRenderMode.CameraNearPlane;
+        _videoPlayer.targetCamera = bg.transform.GetComponent<Camera>();
 
-        videoPlayer.enabled = true;
-        videoPlayer.Pause();
+        _videoPlayer.enabled = true;
+        _videoPlayer.Pause();
 
-        controller.StartCoroutine(PlayVideoDelayed(videoPlayer).GetEnumerator());
+        controller.StartCoroutine(PlayVideoDelayed(_videoPlayer).GetEnumerator());
     }
-    
+
+    public override bool CanResume => true;
+
+    public override void OnPause()
+    {
+        _videoPlayer.Pause();
+    }
+
+    public override void OnResume()
+    {
+        _videoPlayer.Play();
+    }
+
     public static IEnumerable<YieldInstruction> PlayVideoDelayed(VideoPlayer videoPlayer)
     {
         yield return new WaitForSeconds(2.4f);

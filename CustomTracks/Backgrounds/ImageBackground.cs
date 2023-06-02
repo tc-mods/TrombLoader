@@ -23,4 +23,16 @@ public class ImageBackground : HijackedBackground
         bgplane.gameObject.SetActive(true);
         renderer.gameObject.SetActive(true);
     }
+
+    public override bool CanResume => true;
+
+    public override void OnPause()
+    {
+        // muffin
+    }
+
+    public override void OnResume()
+    {
+        // muffin
+    }
 }

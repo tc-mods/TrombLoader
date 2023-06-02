@@ -11,4 +11,16 @@ public class EmptyBackground : HijackedBackground
     {
         DisableParts(bg);
     }
+
+    public override bool CanResume => true;
+
+    public override void OnPause()
+    {
+        // muffin
+    }
+
+    public override void OnResume()
+    {
+        // muffin
+    }
 }
