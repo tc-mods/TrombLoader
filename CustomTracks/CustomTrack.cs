@@ -129,8 +129,8 @@ public class CustomTrack : TromboneTrack
         }
 
         public bool CanResume => _background.CanResume;
-        public void OnPause() => _background.OnPause();
-        public void OnResume() => _background.OnResume();
+        public void OnPause(PauseContext ctx) => _background.OnPause(ctx);
+        public void OnResume(PauseContext ctx) => _background.OnResume(ctx);
 
         public void Dispose()
         {
