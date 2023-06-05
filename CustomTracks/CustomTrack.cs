@@ -1,11 +1,14 @@
 ﻿using System.IO;
 using BaboonAPI.Hooks.Tracks;
+using BaboonAPI.Utility;
+using Microsoft.FSharp.Core;
 using TrombLoader.CustomTracks.Backgrounds;
+using TrombLoader.Helpers;
 using UnityEngine;
 
 namespace TrombLoader.CustomTracks;
 
-public class CustomTrack : TromboneTrack
+public class CustomTrack : TromboneTrack, Previewable
 {
     /// <summary>
     ///  Folder path that this track can be found at
@@ -41,6 +44,23 @@ public class CustomTrack : TromboneTrack
     public LoadedTromboneTrack LoadTrack()
     {
         return new LoadedCustomTrack(this, LoadBackground());
+    }
+
+    // Previewable callback
+    public Coroutines.YieldTask<FSharpResult<TrackAudio, string>> LoadClip()
+    {
+        var previewPath = Path.Combine(folderPath, Globals.defaultPreviewName);
+        if (!File.Exists(previewPath))
+        {
+            previewPath = Path.Combine(folderPath, Globals.defaultAudioName);
+        }
+
+        var task = BaboonAPI.Utility.Unity.loadAudioClip(previewPath, AudioType.OGGVORBIS);
+
+        // uh oh here comes the F#
+        return Coroutines.map(FuncConvert.FromFunc((FSharpResult<AudioClip, string> res) =>
+            ResultModule.Map(FuncConvert.FromFunc((AudioClip clip) =>
+                new TrackAudio(clip, 0.9f)), res)), task);
     }
 
     private AbstractBackground LoadBackground()
@@ -85,7 +105,7 @@ public class CustomTrack : TromboneTrack
 
         public TrackAudio LoadAudio()
         {
-            var songPath = Path.Combine(_parent.folderPath, "song.ogg");
+            var songPath = Path.Combine(_parent.folderPath, Globals.defaultAudioName);
             var e = Plugin.Instance.GetAudioClipSync(songPath);
 
             // TODO: is there a sync way of getting audio clips off disk
