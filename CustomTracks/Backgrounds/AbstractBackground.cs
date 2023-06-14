@@ -17,8 +17,8 @@ public abstract class AbstractBackground : IDisposable, PauseAware
 
     public abstract void SetUpBackground(BGController controller, GameObject bg);
 
-    public abstract void OnPause();
-    public abstract void OnResume();
+    public abstract void OnPause(PauseContext ctx);
+    public abstract void OnResume(PauseContext ctx);
     public abstract bool CanResume { get; }
 
     public virtual void Dispose()

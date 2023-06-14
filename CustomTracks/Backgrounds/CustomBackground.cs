@@ -14,7 +14,6 @@ namespace TrombLoader.CustomTracks.Backgrounds;
 public class CustomBackground : AbstractBackground
 {
     private string _songPath;
-    private GameObject _background;
     private List<VideoPlayer> _pausedVideoPlayers = new();
 
     public CustomBackground(AssetBundle bundle, string songPath) : base(bundle)
@@ -104,7 +103,6 @@ public class CustomBackground : AbstractBackground
     public override void SetUpBackground(BGController controller, GameObject bg)
     {
         var gameController = controller.gamecontroller;
-        _background = bg;
 
         foreach (var videoPlayer in bg.GetComponentsInChildren<VideoPlayer>())
         {
@@ -171,19 +169,19 @@ public class CustomBackground : AbstractBackground
 
     public override bool CanResume => true;
 
-    public override void OnPause()
+    public override void OnPause(PauseContext ctx)
     {
-        foreach (var animator in _background.GetComponentsInChildren<Animator>())
+        foreach (var animator in ctx.backgroundObj.GetComponentsInChildren<Animator>())
         {
             animator.enabled = false;
         }
 
-        foreach (var animation in _background.GetComponentsInChildren<Animation>())
+        foreach (var animation in ctx.backgroundObj.GetComponentsInChildren<Animation>())
         {
             animation.enabled = false;
         }
         
-        foreach (var videoPlayer in _background.GetComponentsInChildren<VideoPlayer>())
+        foreach (var videoPlayer in ctx.backgroundObj.GetComponentsInChildren<VideoPlayer>())
         {
             if (videoPlayer.isPlaying)
             {
@@ -193,14 +191,14 @@ public class CustomBackground : AbstractBackground
         }
     }
 
-    public override void OnResume()
+    public override void OnResume(PauseContext ctx)
     {
-        foreach (var animator in _background.GetComponentsInChildren<Animator>())
+        foreach (var animator in ctx.backgroundObj.GetComponentsInChildren<Animator>())
         {
             animator.enabled = true;
         }
         
-        foreach (var animation in _background.GetComponentsInChildren<Animation>())
+        foreach (var animation in ctx.backgroundObj.GetComponentsInChildren<Animation>())
         {
             animation.enabled = true;
         }
@@ -215,7 +213,6 @@ public class CustomBackground : AbstractBackground
 
     public override void Dispose()
     {
-        _background = null;
         _pausedVideoPlayers.Clear();
         base.Dispose();
     }

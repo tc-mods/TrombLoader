@@ -1,4 +1,5 @@
-﻿using TrombLoader.Helpers;
+﻿using BaboonAPI.Hooks.Tracks;
+using TrombLoader.Helpers;
 using UnityEngine;
 
 namespace TrombLoader.CustomTracks.Backgrounds;
@@ -26,12 +27,12 @@ public class ImageBackground : HijackedBackground
 
     public override bool CanResume => true;
 
-    public override void OnPause()
+    public override void OnPause(PauseContext ctx)
     {
         // muffin
     }
 
-    public override void OnResume()
+    public override void OnResume(PauseContext ctx)
     {
         // muffin
     }

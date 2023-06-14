@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using BaboonAPI.Hooks.Tracks;
 using UnityEngine;
 using UnityEngine.Video;
 
@@ -42,12 +43,12 @@ public class VideoBackground : HijackedBackground
 
     public override bool CanResume => true;
 
-    public override void OnPause()
+    public override void OnPause(PauseContext ctx)
     {
         _videoPlayer.Pause();
     }
 
-    public override void OnResume()
+    public override void OnResume(PauseContext ctx)
     {
         _videoPlayer.Play();
     }
