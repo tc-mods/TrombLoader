@@ -18,8 +18,8 @@ public class CustomTrackData
     public int difficulty;
     public float tempo;
     public string backgroundMovement = "none";
-    public int savednotespacing;
-    public int timesig;
+    public float savednotespacing;
+    public float timesig;
     public List<Lyric> lyrics = new();
     public float[] note_color_start = { 1.0f, 0.21f, 0f };
     public float[] note_color_end = { 1.0f, 0.8f, 0.3f };
@@ -37,9 +37,9 @@ public class CustomTrackData
             lyricstxt = lyrics.Select(lyric => lyric.text).ToList(),
             note_color_start = note_color_start,
             note_color_end = note_color_end,
-            savednotespacing = savednotespacing,
+            savednotespacing = (int)savednotespacing,
             tempo = tempo,
-            timesig = timesig
+            timesig = (int)timesig
         };
     }
 
