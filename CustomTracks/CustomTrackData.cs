@@ -24,6 +24,7 @@ public class CustomTrackData
     public float[] note_color_start = { 1.0f, 0.21f, 0f };
     public float[] note_color_end = { 1.0f, 0.8f, 0.3f };
     public float[][] notes;
+    public float[][] improv_zones;
     public float[][] bgdata = {};
 
     public SavedLevel ToSavedLevel()
@@ -32,6 +33,7 @@ public class CustomTrackData
         {
             savedleveldata = new List<float[]>(notes),
             bgdata = new List<float[]>(bgdata),
+            improv_zones = new List<float[]>(improv_zones),
             endpoint = endpoint,
             lyricspos = lyrics.Select(lyric => new[] { lyric.bar, 0 }).ToList(),
             lyricstxt = lyrics.Select(lyric => lyric.text).ToList(),
