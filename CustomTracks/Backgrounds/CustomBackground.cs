@@ -260,27 +260,31 @@ public class CustomBackground : AbstractBackground
             shaderCache[songSpecificShader.Key] = songSpecificShader.Value;
         }
 
-        foreach (var renderer in bg.GetComponentsInChildren<Renderer>(true))
+        var materials = new[]
         {
-            foreach (var material in renderer.materials)
+            bg.GetComponentsInChildren<Renderer>(true).SelectMany(renderer => renderer.materials),
+            bg.GetComponentsInChildren<TMP_Text>(true).Select(textMesh => textMesh.fontSharedMaterial),
+            bg.GetComponentsInChildren<Graphic>(true).Select(graphics => graphics.material)
+        }.SelectMany(x => x);
+
+        foreach (var material in materials)
+        {
+            if (material == null || material.shader == null) continue;
+
+            // FIRST: check if the shader is in base game. Normally if it uses base game, everything is good, the shader is NOT broken.
+            // Unfortunately this is wildly inconsistent, and the only shader that seems to consistently work is Standard
+            // This does need a closer look if somebody can come up with a list of shaders that always deserialize properly, as switching shaders on a material is fairly expensive
+            if (material.shader.name == "Standard") continue;
+
+            if (shaderCache.TryGetValue(material.shader.name, out var shader))
             {
-                if (material == null || material.shader == null) continue;
-
-                // FIRST: check if the shader is in base game. Normally if it uses base game, everything is good, the shader is NOT broken.
-                // Unfortunately this is wildly inconsistent, and the only shader that seems to consistently work is Standard
-                // This does need a closer look if somebody can come up with a list of shaders that always deserialize properly, as switching shaders on a material is fairly expensive
-                if (material.shader.name == "Standard") continue;
-
-                if (shaderCache.TryGetValue(material.shader.name, out var shader))
-                {
-                    material.shader = shader;
-                    Plugin.LogDebug($"Replacing shader on {renderer.gameObject.name} ({shader.name})");
-                }
-                else
-                {
-                    // TODO: Handle more gracefully. Maybe replace with a default shader.
-                    Plugin.LogDebug($"Could not find shader on {renderer.gameObject.name} ({material.shader.name})");
-                }
+                material.shader = shader;
+                Plugin.LogDebug($"Replacing shader on {material.name} ({shader.name})");
+            }
+            else
+            {
+                // TODO: Handle more gracefully. Maybe replace with a default shader.
+                Plugin.LogDebug($"Could not find shader on {material.name} ({material.shader.name})");
             }
         }
     }
