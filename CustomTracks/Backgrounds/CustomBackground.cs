@@ -1,9 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using BaboonAPI.Hooks.Tracks;
+using Cinemachine;
+using TMPro;
 using TrombLoader.Data;
 using TrombLoader.Helpers;
 using UnityEngine;
+using UnityEngine.Playables;
+using UnityEngine.UI;
 using UnityEngine.Video;
 
 namespace TrombLoader.CustomTracks.Backgrounds;
@@ -169,18 +174,36 @@ public class CustomBackground : AbstractBackground
 
     public override bool CanResume => true;
 
-    public override void OnPause(PauseContext ctx)
+    private IEnumerable<Behaviour> GetPauseableBehaviours(PauseContext ctx)
     {
         foreach (var animator in ctx.backgroundObj.GetComponentsInChildren<Animator>())
         {
-            animator.enabled = false;
+            yield return animator;
         }
 
         foreach (var animation in ctx.backgroundObj.GetComponentsInChildren<Animation>())
         {
-            animation.enabled = false;
+            yield return animation;
         }
-        
+
+        foreach (var director in ctx.backgroundObj.GetComponentsInChildren<PlayableDirector>())
+        {
+            yield return director;
+        }
+
+        foreach (var dollyCart in ctx.backgroundObj.GetComponentsInChildren<CinemachineDollyCart>())
+        {
+            yield return dollyCart;
+        }
+    }
+
+    public override void OnPause(PauseContext ctx)
+    {
+        foreach (var behaviour in GetPauseableBehaviours(ctx))
+        {
+            behaviour.enabled = false;
+        }
+
         foreach (var videoPlayer in ctx.backgroundObj.GetComponentsInChildren<VideoPlayer>())
         {
             if (videoPlayer.isPlaying)
@@ -193,14 +216,9 @@ public class CustomBackground : AbstractBackground
 
     public override void OnResume(PauseContext ctx)
     {
-        foreach (var animator in ctx.backgroundObj.GetComponentsInChildren<Animator>())
+        foreach (var behaviour in GetPauseableBehaviours(ctx))
         {
-            animator.enabled = true;
-        }
-        
-        foreach (var animation in ctx.backgroundObj.GetComponentsInChildren<Animation>())
-        {
-            animation.enabled = true;
+            behaviour.enabled = true;
         }
 
         foreach (var videoPlayer in _pausedVideoPlayers)
