@@ -20,6 +20,7 @@ public class CustomBackground : AbstractBackground
 {
     private string _songPath;
     private List<VideoPlayer> _pausedVideoPlayers = new();
+    private List<ParticleSystem> _pausedParticleSystems = new();
 
     public CustomBackground(AssetBundle bundle, string songPath) : base(bundle)
     {
@@ -212,6 +213,15 @@ public class CustomBackground : AbstractBackground
                 _pausedVideoPlayers.Add(videoPlayer);
             }
         }
+
+        foreach (var particleSystem in ctx.backgroundObj.GetComponentsInChildren<ParticleSystem>())
+        {
+            if (particleSystem.isPlaying)
+            {
+                particleSystem.Pause();
+                _pausedParticleSystems.Add(particleSystem);
+            }
+        }
     }
 
     public override void OnResume(PauseContext ctx)
@@ -226,7 +236,13 @@ public class CustomBackground : AbstractBackground
             videoPlayer.Play();
         }
 
+        foreach (var particleSystem in _pausedParticleSystems)
+        {
+            particleSystem.Play();
+        }
+
         _pausedVideoPlayers.Clear();
+        _pausedParticleSystems.Clear();
     }
 
     public override void Dispose()
