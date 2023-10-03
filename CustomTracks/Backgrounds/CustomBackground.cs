@@ -183,7 +183,8 @@ public class CustomBackground : AbstractBackground
                     break;
             }
             
-            if (GlobalVariables.localsave.cardcollectionstatus[36] > 9)
+            if  ((GlobalVariables.localsave.cardcollectionstatus[36] >= 10 && GlobalVariables.show_toot_rainbow) 
+            || (GlobalVariables.localsave.cardcollectionstatus_gold[36] > 0 && GlobalVariables.show_toot_rainbow))
             {
                 tromboner.controller.show_rainbow = true;
             }
