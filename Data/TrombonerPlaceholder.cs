@@ -65,17 +65,6 @@ namespace TrombLoader.Data
     }
 
     [Serializable]
-    public enum TrombonerMovementType
-    {
-        [InspectorName("Do Not Override (Default)")]
-        DoNotOverride = -1,
-        [InspectorName("Jubilant")]
-        Jubilant = 0,
-        [InspectorName("Estudious")]
-        Estudious = 1,
-    }
-
-    [Serializable]
     public enum TromboneLength
     {
         [InspectorName("Do Not Override (Default)")]
@@ -84,5 +73,16 @@ namespace TrombLoader.Data
         Short = 0,
         [InspectorName("Long")]
         Long = 1,
+    }
+
+    [Serializable]
+    public enum TrombonerMovementType
+    {
+        [InspectorName("Do Not Override (Default)")]
+        DoNotOverride = -1,
+        [InspectorName("Jubilant")]
+        Jubilant = 0,
+        [InspectorName("Estudious")]
+        Estudious = 1,
     }
 }
