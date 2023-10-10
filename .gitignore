@@ -403,3 +403,6 @@ Folder.DotSettings.user
 MyFirstPlugin.7z
 libs
 *.patch
+
+# Remove macOS metadata files
+.DS_Store
