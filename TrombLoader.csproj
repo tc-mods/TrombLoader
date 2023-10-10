@@ -29,7 +29,7 @@
         <None Include="$(SolutionDir)thunderstore\icon.png" Pack="true" PackagePath="\" />
     </ItemGroup>
 
-    <ItemGroup>
+    <ItemGroup Condition="'$(Configuration)' != 'Editor'">
         <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
         <PackageReference Include="BepInEx.Core" Version="5.*" />
         <PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
@@ -41,8 +41,20 @@
 
     <ItemGroup>
         <PackageReference Include="TromboneChamp.GameLibs" Version="1.14.0" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(Configuration)' != 'Editor'">
         <PackageReference Include="TromboneChamp.BaboonAPI" Version="2.5.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(Configuration)' == 'Editor'">
+        <Compile Remove="Plugin.cs" />
+        <Compile Remove="CustomTracks/**" />
+        <Compile Remove="Patch/**" />
+        <Compile Remove="Helpers/Globals.cs" />
+        <Compile Remove="Helpers/ShaderHelper.cs" />
+        <Compile Remove="Data/TromboneEventInvoker.cs" />
     </ItemGroup>
 
     <ItemGroup>

@@ -165,8 +165,26 @@ public class CustomBackground : AbstractBackground
             tromboner.controller.setTromboneTex(trombonePlaceholder.TromboneSkin == TromboneSkin.DoNotOverride
                 ? gameController.textureindex
                 : (int)trombonePlaceholder.TromboneSkin);
-
-            if (GlobalVariables.localsave.cardcollectionstatus[36] > 9)
+            
+            // long long maaaaaan https://youtu.be/6-1Ue0FFrHY
+            if(GlobalVariables.show_long_trombone && trombonePlaceholder.TromboneLength 
+                == TromboneLength.DoNotOverride){
+                trombonePlaceholder.TromboneLength = TromboneLength.Long;
+            }
+            switch(trombonePlaceholder.TromboneLength)
+            {
+                case TromboneLength.Short:
+                    tromboner.controller.tube_distance = 1.1f;
+                    tromboner.controller.p_tube.transform.localScale = new Vector3(1f, 1f, 1f);
+                    break;
+                case TromboneLength.Long:
+                    tromboner.controller.tube_distance = 3.57f;
+                    tromboner.controller.p_tube.transform.localScale = new Vector3(1f, 1f, 2.25f);
+                    break;
+            }
+            
+            if  ((GlobalVariables.localsave.cardcollectionstatus[36] >= 10 && GlobalVariables.show_toot_rainbow) 
+            || (GlobalVariables.localsave.cardcollectionstatus_gold[36] > 0 && GlobalVariables.show_toot_rainbow))
             {
                 tromboner.controller.show_rainbow = true;
             }
