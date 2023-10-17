@@ -17,6 +17,7 @@ public class CustomTrackData
     public string genre;
     public int difficulty;
     public float tempo;
+    public bool beatless = false;
     public string backgroundMovement = "none";
     public int savednotespacing;
     public int timesig;

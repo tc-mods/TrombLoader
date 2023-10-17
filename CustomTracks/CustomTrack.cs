@@ -27,6 +27,7 @@ public class CustomTrack : TromboneTrack, Previewable
     public string genre => _data.genre;
     public int difficulty => _data.difficulty;
     public int tempo => (int) _data.tempo;
+    public bool beatless => _data.beatless;
     public int length => Mathf.FloorToInt(_data.endpoint / (_data.tempo / 60f));
 
     public CustomTrack(string folderPath, CustomTrackData data, TrackLoader loader)
