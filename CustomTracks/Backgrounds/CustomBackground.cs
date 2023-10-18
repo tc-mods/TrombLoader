@@ -166,6 +166,13 @@ public class CustomBackground : AbstractBackground
                 ? gameController.textureindex
                 : (int)trombonePlaceholder.TromboneSkin);
             
+            
+            if (trombonePlaceholder.TrombonerOutfit == TrombonerOutfit.Christmas) {
+                Material[] materials = tromboner.controller.bodymesh.materials;
+                materials[0] = tromboner.controller.costume_alt;
+                tromboner.controller.bodymesh.materials = materials;
+            }
+            
             // long long maaaaaan https://youtu.be/6-1Ue0FFrHY
             if(GlobalVariables.show_long_trombone && trombonePlaceholder.TromboneLength 
                 == TromboneLength.DoNotOverride){
