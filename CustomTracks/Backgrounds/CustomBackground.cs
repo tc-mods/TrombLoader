@@ -173,6 +173,18 @@ public class CustomBackground : AbstractBackground
                 tromboner.controller.bodymesh.materials = materials;
             }
             
+            var chosen_hat = trombonePlaceholder.TromboneHat == TromboneHat.DoNotOverride
+            ? GlobalVariables.chosen_hat : (int)trombonePlaceholder.TromboneHat;
+
+            if (chosen_hat > 0)
+            {
+                GameObject hat = Object.Instantiate(controller.gamecontroller.hats[chosen_hat - 1], 
+                                tromboner.controller.bellmesh.transform, worldPositionStays: false);
+                hat.transform.localPosition = new Vector3(0.189f, 0.332f, 0.309f);
+                hat.transform.localEulerAngles = new Vector3(0f, 0f, 45f);
+                hat.transform.localScale = new Vector3(0.12f, 0.12f, 0.2f);
+            }
+
             // long long maaaaaan https://youtu.be/6-1Ue0FFrHY
             if(GlobalVariables.show_long_trombone && trombonePlaceholder.TromboneLength 
                 == TromboneLength.DoNotOverride){
@@ -189,6 +201,8 @@ public class CustomBackground : AbstractBackground
                     tromboner.controller.p_tube.transform.localScale = new Vector3(1f, 1f, 2.25f);
                     break;
             }
+
+            
             
             if  ((GlobalVariables.localsave.cardcollectionstatus[36] >= 10 && GlobalVariables.show_toot_rainbow) 
             || (GlobalVariables.localsave.cardcollectionstatus_gold[36] > 0 && GlobalVariables.show_toot_rainbow))
