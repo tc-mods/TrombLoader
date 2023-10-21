@@ -6,9 +6,11 @@ namespace TrombLoader.Data
     public class TrombonerPlaceholder : MonoBehaviour
     {
         public TrombonerType TrombonerType = TrombonerType.DoNotOverride;
+        public TrombonerOutfit TrombonerOutfit = TrombonerOutfit.DoNotOverride;
         public TromboneSkin TromboneSkin = TromboneSkin.DoNotOverride;
-        public TrombonerMovementType MovementType = TrombonerMovementType.DoNotOverride;
         public TromboneLength TromboneLength = TromboneLength.DoNotOverride;
+        public TromboneHat TromboneHat = TromboneHat.DoNotOverride;
+        public TrombonerMovementType MovementType = TrombonerMovementType.DoNotOverride;
 
         [HideInInspector, SerializeField]
         public int InstanceID = 0;
@@ -39,6 +41,17 @@ namespace TrombLoader.Data
         Female5 = 8,
         [InspectorName("Servant Of Babi")]
         Male5 = 9,
+    }
+
+    [Serializable]
+    public enum TrombonerOutfit
+    {
+        [InspectorName("Do Not Override (Default)")]
+        DoNotOverride = -1,
+        [InspectorName("Default")]
+        Default = 0,
+        [InspectorName("Christmas")]
+        Christmas = 1,
     }
 
     [Serializable]
@@ -73,6 +86,17 @@ namespace TrombLoader.Data
         Short = 0,
         [InspectorName("Long")]
         Long = 1,
+    }
+
+    [Serializable]
+    public enum TromboneHat
+    {
+        [InspectorName("Do Not Override (Default)")]
+        DoNotOverride = -1,
+        [InspectorName("Disabled")]
+        Disabled = 0,
+        [InspectorName("Enabled")]
+        Enabled = 1,
     }
 
     [Serializable]
