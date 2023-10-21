@@ -178,7 +178,7 @@ public class CustomBackground : AbstractBackground
 
             if (chosen_hat > 0)
             {
-                GameObject hat = Object.Instantiate(controller.gamecontroller.hats[chosen_hat - 1], 
+                GameObject hat = Object.Instantiate(gameController.hats[chosen_hat - 1], 
                                 tromboner.controller.bellmesh.transform, worldPositionStays: false);
                 hat.transform.localPosition = new Vector3(0.189f, 0.332f, 0.309f);
                 hat.transform.localEulerAngles = new Vector3(0f, 0f, 45f);
@@ -202,8 +202,6 @@ public class CustomBackground : AbstractBackground
                     break;
             }
 
-            
-            
             if  ((GlobalVariables.localsave.cardcollectionstatus[36] >= 10 && GlobalVariables.show_toot_rainbow) 
             || (GlobalVariables.localsave.cardcollectionstatus_gold[36] > 0 && GlobalVariables.show_toot_rainbow))
             {
