@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using BaboonAPI.Hooks.Tracks;
 using Newtonsoft.Json;
 using TrombLoader.Helpers;
@@ -24,6 +25,7 @@ public class TrackLoader: TrackRegistrationEvent.Listener
         foreach (var songFolder in songs)
         {
             var chartPath = Path.Combine(songFolder, Globals.defaultChartName);
+            var chartName = Path.GetFileName(songFolder.TrimEnd('/'));
             if (!File.Exists(chartPath)) continue;
 
             using var stream = File.OpenText(chartPath);
@@ -32,6 +34,7 @@ public class TrackLoader: TrackRegistrationEvent.Listener
             CustomTrackData customLevel;
             try
             {
+                _serializer.Context = new StreamingContext(StreamingContextStates.File, chartName);
                 customLevel = _serializer.Deserialize<CustomTrackData>(reader);
             }
             catch (Exception exc)
