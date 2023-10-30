@@ -13,5 +13,7 @@ jobs:
       - uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '6.0'
+      - run: dotnet tool install -g tcli
       - run: dotnet build -c Release
       - run: dotnet nuget push bin/Release/*.nupkg -k ${{ secrets.NUGET_TOKEN }} -s https://api.nuget.org/v3/index.json
+      - run: tcli publish --file bin/Release/net472/TrombLoader-thunderstore.zip --token ${{ secrets.THUNDERSTORE_TOKEN }}

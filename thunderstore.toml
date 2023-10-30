@@ -1,0 +1,14 @@
+[config]
+schemaVersion = "0.0.1"
+
+[package]
+namespace = "TromboneChamps"
+name = "TrombLoader"
+description = "Trombone Champ Custom Chart Loader."
+websiteUrl = "https://github.com/tc-mods/TrombLoader"
+containsNsfwContent = false
+
+[publish]
+repository = "https://thunderstore.io"
+communities = [ "trombone-champ", ]
+categories = [ "mods", ]
