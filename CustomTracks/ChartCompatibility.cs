@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace TrombLoader.CustomTracks;
 
-public class ChartCompability
+public class ChartCompatibility
 {
     private static ManualLogSource _logger = Logger.CreateLogSource("TrombLoader.Compatibility");
 
@@ -33,11 +33,13 @@ public class ChartCompability
 
             if (reader.TokenType is JsonToken.Float or JsonToken.String)
             {
-                var chartName = (string) serializer.Context.Context;
-                _logger.LogWarning($"Chart '{chartName}' has invalid type {reader.TokenType.ToString()} on field {_fieldName} (expected an integer)");
+                if (reader.TokenType is JsonToken.Float)
+                {
+                    var chartName = (string) serializer.Context.Context;
+                    _logger.LogWarning($"Chart '{chartName}' has invalid type {reader.TokenType.ToString()} on field {_fieldName} (expected an integer)");
+                }
 
-                double value = Convert.ToDouble(reader.Value);
-                return (int)value;
+                return (int) Convert.ToDouble(reader.Value);
             }
 
             if (reader.TokenType != JsonToken.Integer)

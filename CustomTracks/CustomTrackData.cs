@@ -18,9 +18,9 @@ public class CustomTrackData
     public int difficulty;
     public float tempo;
     public string backgroundMovement = "none";
-    [JsonConverter(typeof(ChartCompability.IntOrFloatConverter), "savednotespacing")]
+    [JsonConverter(typeof(ChartCompatibility.IntOrFloatConverter), "savednotespacing")]
     public int savednotespacing;
-    [JsonConverter(typeof(ChartCompability.IntOrFloatConverter), "timesig")]
+    [JsonConverter(typeof(ChartCompatibility.IntOrFloatConverter), "timesig")]
     public int timesig;
     public List<Lyric> lyrics = new();
     public float[] note_color_start = { 1.0f, 0.21f, 0f };
