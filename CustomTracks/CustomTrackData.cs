@@ -7,25 +7,29 @@ namespace TrombLoader.CustomTracks;
 [JsonObject]
 public class CustomTrackData
 {
-    public string trackRef;
-    public string name;
-    public string shortName;
-    public string author;
-    public string description;
-    public float endpoint;
-    public int year;
-    public string genre;
-    public int difficulty;
-    public float tempo;
+    [JsonRequired] public string trackRef;
+    [JsonRequired] public string name;
+    [JsonRequired] public string shortName;
+    [JsonRequired] public string author;
+    [JsonRequired] public string description;
+    [JsonRequired] public float endpoint;
+    [JsonRequired] public int year;
+    [JsonRequired] public string genre;
+    [JsonRequired] public int difficulty;
+    [JsonRequired] public float tempo;
     public string backgroundMovement = "none";
+
     [JsonConverter(typeof(ChartCompatibility.IntOrFloatConverter), "savednotespacing")]
+    [JsonRequired]
     public int savednotespacing;
     [JsonConverter(typeof(ChartCompatibility.IntOrFloatConverter), "timesig")]
+    [JsonRequired]
     public int timesig;
+
     public List<Lyric> lyrics = new();
     public float[] note_color_start = { 1.0f, 0.21f, 0f };
     public float[] note_color_end = { 1.0f, 0.8f, 0.3f };
-    public float[][] notes;
+    [JsonRequired] public float[][] notes;
     public float[][] improv_zones = {};
     public float[][] bgdata = {};
 
