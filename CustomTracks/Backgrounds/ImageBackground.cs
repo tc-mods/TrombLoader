@@ -16,7 +16,8 @@ public class ImageBackground : HijackedBackground
     public override void SetUpBackground(BGController controller, GameObject bg)
     {
         DisableParts(bg);
-        
+
+        var camera = bg.GetComponent<Camera>();
         var bgplane = bg.transform.GetChild(0);
         var renderer = bgplane.GetChild(0).GetComponent<SpriteRenderer>();
         renderer.sprite = ImageHelper.LoadSpriteFromFile(_imagePath);
@@ -36,6 +37,8 @@ public class ImageBackground : HijackedBackground
         }
 
         renderer.transform.localScale = Vector3.one * scaleFactor;
+
+        camera.backgroundColor = Color.black;
 
         bgplane.gameObject.SetActive(true);
         renderer.gameObject.SetActive(true);
