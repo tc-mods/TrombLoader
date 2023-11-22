@@ -16,13 +16,25 @@ public class ImageBackground : HijackedBackground
     public override void SetUpBackground(BGController controller, GameObject bg)
     {
         DisableParts(bg);
-
+        
         var bgplane = bg.transform.GetChild(0);
         var renderer = bgplane.GetChild(0).GetComponent<SpriteRenderer>();
         renderer.sprite = ImageHelper.LoadSpriteFromFile(_imagePath);
 
-        float spriteHeight = renderer.sprite.rect.height;
-        float scaleFactor = 10 / spriteHeight;
+        float scaleFactor;
+        float aspectRatio = renderer.sprite.rect.width / renderer.sprite.rect.height;
+
+        if (aspectRatio > 1.7778f)
+        {
+            float spriteWidth = renderer.sprite.rect.width / renderer.sprite.pixelsPerUnit;
+            scaleFactor = 17.778f / spriteWidth;
+        }
+        else
+        {
+            float spriteHeight = renderer.sprite.rect.height / renderer.sprite.pixelsPerUnit;
+            scaleFactor = 10 / spriteHeight;
+        }
+
         renderer.transform.localScale = Vector3.one * scaleFactor;
 
         bgplane.gameObject.SetActive(true);
