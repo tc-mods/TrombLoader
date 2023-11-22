@@ -21,6 +21,10 @@ public class ImageBackground : HijackedBackground
         var renderer = bgplane.GetChild(0).GetComponent<SpriteRenderer>();
         renderer.sprite = ImageHelper.LoadSpriteFromFile(_imagePath);
 
+        float spriteHeight = renderer.sprite.rect.height;
+        float scaleFactor = 10 / spriteHeight;
+        renderer.transform.localScale = Vector3.one * scaleFactor;
+
         bgplane.gameObject.SetActive(true);
         renderer.gameObject.SetActive(true);
     }
