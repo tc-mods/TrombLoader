@@ -38,7 +38,34 @@ public class ImageBackground : HijackedBackground
 
         renderer.transform.localScale = Vector3.one * scaleFactor;
 
-        camera.backgroundColor = Color.black;
+
+        // just gives a bit of wiggle room for images that aren't quite 16:9
+        if (aspectRatio >= 1.7f && aspectRatio <= 1.78f) {
+            camera.backgroundColor = Color.black;
+        }
+        else
+        {
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+            var pixels = renderer.sprite.texture.GetPixels();
+            int total = pixels.Length;
+
+            float r = 0;
+            float g = 0;
+            float b = 0;
+
+            foreach (var color in pixels)
+            {
+                r += color.r;
+                g += color.g;
+                b += color.b;
+            }
+
+            camera.backgroundColor = new Color(r / total, g / total, b / total);
+            stopwatch.Stop();
+            Debug.Log ($"Time taken: {stopwatch.ElapsedMilliseconds}ms");
+            stopwatch.Reset();
+        }
 
         bgplane.gameObject.SetActive(true);
         renderer.gameObject.SetActive(true);
