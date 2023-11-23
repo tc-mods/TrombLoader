@@ -10,7 +10,11 @@ public class EmptyBackground : HijackedBackground
 {
     public override void SetUpBackground(BGController controller, GameObject bg)
     {
-        DisableParts(bg);
+        // TODO: check TrombLoader config for background preference
+        // DisableParts(bg);
+        
+        // this is just to enable the background animations
+        controller.songname = "freeplay";
     }
 
     public override bool CanResume => true;

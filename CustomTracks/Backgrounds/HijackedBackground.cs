@@ -9,13 +9,13 @@ namespace TrombLoader.CustomTracks.Backgrounds;
 public abstract class HijackedBackground : AbstractBackground
 {
     protected HijackedBackground() :
-        base(AssetBundle.LoadFromFile($"{Application.streamingAssetsPath}/trackassets/ballgame"))
+        base(AssetBundle.LoadFromFile($"{Application.streamingAssetsPath}/trackassets/freeplay"))
     {
     }
 
     public override GameObject Load(BackgroundContext ctx)
     {
-        return Bundle.LoadAsset<GameObject>("BGCam_ballgame");
+        return Bundle.LoadAsset<GameObject>("BGCam_freeplay");
     }
 
     protected void DisableParts(GameObject bg)

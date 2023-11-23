@@ -19,7 +19,8 @@ public class ImageBackground : HijackedBackground
 
         var camera = bg.GetComponent<Camera>();
         var bgplane = bg.transform.GetChild(0);
-        var renderer = bgplane.GetChild(0).GetComponent<SpriteRenderer>();
+        var renderer = bgplane.GetChild(1).GetComponent<SpriteRenderer>();
+        renderer.color = Color.white;
         renderer.sprite = ImageHelper.LoadSpriteFromFile(_imagePath);
 
         float scaleFactor;
