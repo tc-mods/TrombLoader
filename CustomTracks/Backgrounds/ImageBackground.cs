@@ -46,25 +46,35 @@ public class ImageBackground : HijackedBackground
         else
         {
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
-            stopwatch.Start();
             var pixels = renderer.sprite.texture.GetPixels();
             int total = pixels.Length;
 
             float r = 0;
             float g = 0;
             float b = 0;
+            
+            int iterAmount;
 
-            foreach (var color in pixels)
+            // sampling 200 pixels should probably be enough for this
+            if (total < 200)
             {
+                iterAmount = total;
+            }
+            else
+            {
+                float fraction = total * 0.005f;
+                iterAmount = (int)fraction;
+            }
+
+            for (int i = 0; i < total; i += iterAmount)
+            {
+                var color = pixels[i];
                 r += color.r;
                 g += color.g;
                 b += color.b;
             }
 
-            camera.backgroundColor = new Color(r / total, g / total, b / total);
-            stopwatch.Stop();
-            Debug.Log ($"Time taken: {stopwatch.ElapsedMilliseconds}ms");
-            stopwatch.Reset();
+            camera.backgroundColor = new Color(r / 200, g / 200, b / 200);
         }
 
         bgplane.gameObject.SetActive(true);
