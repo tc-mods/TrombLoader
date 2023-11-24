@@ -26,6 +26,7 @@ public class TrackLoader : TrackRegistrationEvent.Listener
         var tmbDirectories = Directory.GetFiles(Globals.GetCustomSongsPath(), "song.tmb", SearchOption.AllDirectories);
         var seen = new HashSet<string>();
 
+        //For some reasons more thread ends up being much slower even than single threading, but using a low thread count makes it much faster
         Parallel.For(0, tmbDirectories.Length, new ParallelOptions() { MaxDegreeOfParallelism = 2 }, i =>
         {
             CustomTrackData customLevel;
