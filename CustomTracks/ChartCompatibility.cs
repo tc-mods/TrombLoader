@@ -36,7 +36,7 @@ public class ChartCompatibility
                 if (reader.TokenType is JsonToken.Float)
                 {
                     var chartName = (string) serializer.Context.Context;
-                    _logger.LogWarning($"Chart '{chartName}' has invalid type {reader.TokenType.ToString()} on field {_fieldName} (expected an integer)");
+                    _logger.LogWarning($"Chart '{chartName}' has invalid type {reader.TokenType} on field {_fieldName} (expected an integer)");
                 }
 
                 return (int) Convert.ToDouble(reader.Value);
@@ -44,7 +44,7 @@ public class ChartCompatibility
 
             if (reader.TokenType != JsonToken.Integer)
             {
-                throw new JsonException($"Expected number, got {reader.TokenType.ToString()}");
+                throw new JsonException($"Expected number, got {reader.TokenType}");
             }
 
             return Convert.ToInt32(reader.Value);

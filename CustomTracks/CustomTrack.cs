@@ -65,9 +65,10 @@ public class CustomTrack : TromboneTrack, Previewable
 
     private AbstractBackground LoadBackground()
     {
-        if (File.Exists(Path.Combine(folderPath, "bg.trombackground")))
+        var possibleBackgroundPath = Path.Combine(folderPath, "bg.trombackground");
+        if (File.Exists(possibleBackgroundPath))
         {
-            var bundle = AssetBundle.LoadFromFile(Path.Combine(folderPath, "bg.trombackground"));
+            var bundle = AssetBundle.LoadFromFile(possibleBackgroundPath);
             return new CustomBackground(bundle, folderPath);
         }
 
