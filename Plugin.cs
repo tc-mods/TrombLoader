@@ -26,6 +26,7 @@ namespace TrombLoader
         public ConfigEntry<int> beatsToShow;
         public ConfigEntry<bool> DeveloperMode;
         public ConfigEntry<string> DefaultBackground;
+        public ConfigEntry<bool> turboBackgroundFallback;
 
         private Harmony _harmony = new(PluginInfo.PLUGIN_GUID);
 
@@ -33,9 +34,6 @@ namespace TrombLoader
         {
             var customFile = new ConfigFile(Path.Combine(Paths.ConfigPath, "TrombLoader.cfg"), true);
             beatsToShow = customFile.Bind("General", "Note Display Limit", 64, "The maximum amount of notes displayed on screen at once.");
-            DeveloperMode = customFile.Bind("Charting", "Developer Mode", false,
-                "When enabled, TrombLoader will re-read chart data from disk each time a track is loaded.");
-            
             var backgrounds = new List<string>{"freeplay", "freeplay-static", "grey", "black"};
             DefaultBackground = customFile.Bind("General", "Default Background", "freeplay", 
                 $"The default background to show when a chart does not include one. Can be one of the following:\n{string.Join(", ", backgrounds)}");
@@ -44,6 +42,12 @@ namespace TrombLoader
             {
                 LogWarning("Default Background is not set to a valid option!");
             }
+
+            turboBackgroundFallback = customFile.Bind("General", "Turbo Mode Background Fallback", false,
+                "When enabled, TrombLoader will load an image or default background instead of a video background when Turbo Mode is on.");
+
+            DeveloperMode = customFile.Bind("Charting", "Developer Mode", false,
+                "When enabled, TrombLoader will re-read chart data from disk each time a track is loaded.");
 
             Instance = this;
             LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
