@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ public class TrackLoader : TrackRegistrationEvent.Listener
 {
     public IEnumerable<TromboneTrack> OnRegisterTracks()
     {
+        Stopwatch sw = Stopwatch.StartNew();
         CreateMissingDirectories();
 
         List<TromboneTrack> tracks = new List<TromboneTrack>();
@@ -24,8 +26,7 @@ public class TrackLoader : TrackRegistrationEvent.Listener
         var tmbDirectories = Directory.GetFiles(Globals.GetCustomSongsPath(), "song.tmb", SearchOption.AllDirectories);
         var seen = new HashSet<string>();
 
-        //Using more thread isn't faster, tested on 12 logical processor, best result using 3
-        Parallel.For(0, tmbDirectories.Length, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount / 4 }, i =>
+        Parallel.For(0, tmbDirectories.Length, new ParallelOptions() { MaxDegreeOfParallelism = 2 }, i =>
         {
             CustomTrackData customLevel;
             string dirName;
@@ -57,6 +58,8 @@ public class TrackLoader : TrackRegistrationEvent.Listener
                     $"Skipping folder {dirName} as its trackref '{customLevel.trackRef}' was already loaded!");
             }
         });
+        sw.Stop();
+        Plugin.LogInfo($"{tracks.Count} charts were loaded in {sw.Elapsed.TotalMilliseconds:0.00}ms");
         return tracks;
     }
 
