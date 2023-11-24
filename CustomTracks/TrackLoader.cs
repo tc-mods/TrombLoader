@@ -21,24 +21,26 @@ public class TrackLoader : TrackRegistrationEvent.Listener
         //var songDirectories = Directory.GetDirectories(Globals.GetCustomSongsPath());
 
         //Only recursively check inside of the custom songs folder
-        var songDirectories = Directory.GetFiles(Globals.GetCustomSongsPath(), "song.tmb", SearchOption.AllDirectories);
+        var tmbDirectories = Directory.GetFiles(Globals.GetCustomSongsPath(), "song.tmb", SearchOption.AllDirectories);
         var seen = new HashSet<string>();
 
         //Using more thread isn't faster, tested on 12 logical processor, best result using 3
-        Parallel.For(0, songDirectories.Length, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount / 4 }, i =>
+        Parallel.For(0, tmbDirectories.Length, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount / 4 }, i =>
         {
             CustomTrackData customLevel;
+            string dirName;
             try
             {
-                var chartName = Path.GetDirectoryName(songDirectories[i]).TrimEnd('/');
-                customLevel = JsonConvert.DeserializeObject<CustomTrackData>(File.ReadAllText(songDirectories[i]), new JsonSerializerSettings()
+                dirName = Path.GetDirectoryName(tmbDirectories[i]);
+                var chartName = dirName.TrimEnd('/');
+                customLevel = JsonConvert.DeserializeObject<CustomTrackData>(File.ReadAllText(tmbDirectories[i]), new JsonSerializerSettings()
                 {
                     Context = new StreamingContext(StreamingContextStates.File, chartName)
                 });
             }
             catch (Exception exc)
             {
-                Plugin.LogWarning($"Unable to deserialize JSON of custom chart: {songDirectories[i]}");
+                Plugin.LogWarning($"Unable to deserialize JSON of custom chart: {tmbDirectories[i]}");
                 Plugin.LogWarning(exc.Message);
                 return;
             }
@@ -47,12 +49,12 @@ public class TrackLoader : TrackRegistrationEvent.Listener
             {
                 Plugin.LogDebug($"Found custom chart: {customLevel.trackRef}");
 
-                tracks.Add(new CustomTrack(songDirectories[i], customLevel, this));
+                tracks.Add(new CustomTrack(dirName, customLevel, this));
             }
             else
             {
                 Plugin.LogWarning(
-                    $"Skipping folder {songDirectories[i]} as its trackref '{customLevel.trackRef}' was already loaded!");
+                    $"Skipping folder {dirName} as its trackref '{customLevel.trackRef}' was already loaded!");
             }
         });
         return tracks;
