@@ -27,8 +27,6 @@ public class TrackLoader : TrackRegistrationEvent.Listener
         //Using more thread isn't faster, tested on 12 logical processor, best result using 3
         Parallel.For(0, songDirectories.Length, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount / 4 }, i =>
         {
-            if (!File.Exists(songDirectories[i])) return;
-
             CustomTrackData customLevel;
             try
             {
