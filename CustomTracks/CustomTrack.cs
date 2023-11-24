@@ -38,7 +38,7 @@ public class CustomTrack : TromboneTrack, Previewable
 
     public SavedLevel LoadChart()
     {
-        return _loader?.ShouldReloadChart() == true ? _loader.ReloadTrack(this) : _data.ToSavedLevel();
+        return (bool)_loader?.ShouldReloadChart() ? _loader.ReloadTrack(this) : _data.ToSavedLevel();
     }
 
     public LoadedTromboneTrack LoadTrack()
