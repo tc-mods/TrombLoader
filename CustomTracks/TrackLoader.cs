@@ -1,73 +1,70 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.Serialization;
+using System.Threading.Tasks;
 using BaboonAPI.Hooks.Tracks;
 using Newtonsoft.Json;
 using TrombLoader.Helpers;
 
 namespace TrombLoader.CustomTracks;
 
-public class TrackLoader: TrackRegistrationEvent.Listener
+public class TrackLoader : TrackRegistrationEvent.Listener
 {
-    private JsonSerializer _serializer = new();
-
     public IEnumerable<TromboneTrack> OnRegisterTracks()
     {
         CreateMissingDirectories();
 
-        var songs = Directory.GetFiles(Globals.GetCustomSongsPath(), "song.tmb", SearchOption.AllDirectories)
-            .Concat(Directory.GetFiles(BepInEx.Paths.PluginPath, "song.tmb", SearchOption.AllDirectories))
-            .Select(i => Path.GetDirectoryName(i));
+        List<TromboneTrack> tracks = new List<TromboneTrack>();
 
+        //Non recursive method is faster but requires stricter custom songs folder structure
+        //var songDirectories = Directory.GetDirectories(Globals.GetCustomSongsPath());
+
+        //Only recursively check inside of the custom songs folder
+        var songDirectories = Directory.GetFiles(Globals.GetCustomSongsPath(), "song.tmb", SearchOption.AllDirectories);
         var seen = new HashSet<string>();
-        foreach (var songFolder in songs)
-        {
-            var chartPath = Path.Combine(songFolder, Globals.defaultChartName);
-            var chartName = Path.GetFileName(songFolder.TrimEnd('/'));
-            if (!File.Exists(chartPath)) continue;
 
-            using var stream = File.OpenText(chartPath);
-            using var reader = new JsonTextReader(stream);
+        //Using more thread isn't faster, tested on 12 logical processor, best result using 3
+        Parallel.For(0, songDirectories.Length, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount / 4 }, i =>
+        {
+            if (!File.Exists(songDirectories[i])) return;
 
             CustomTrackData customLevel;
             try
             {
-                _serializer.Context = new StreamingContext(StreamingContextStates.File, chartName);
-                customLevel = _serializer.Deserialize<CustomTrackData>(reader);
+                var chartName = Path.GetDirectoryName(songDirectories[i]).TrimEnd('/');
+                customLevel = JsonConvert.DeserializeObject<CustomTrackData>(File.ReadAllText(songDirectories[i]), new JsonSerializerSettings()
+                {
+                    Context = new StreamingContext(StreamingContextStates.File, chartName)
+                });
             }
             catch (Exception exc)
             {
-                Plugin.LogWarning($"Unable to deserialize JSON of custom chart: {chartPath}");
+                Plugin.LogWarning($"Unable to deserialize JSON of custom chart: {songDirectories[i]}");
                 Plugin.LogWarning(exc.Message);
-                continue;
+                return;
             }
-
-            if (customLevel == null) continue;
 
             if (seen.Add(customLevel.trackRef))
             {
                 Plugin.LogDebug($"Found custom chart: {customLevel.trackRef}");
 
-                yield return new CustomTrack(songFolder, customLevel, this);
+                tracks.Add(new CustomTrack(songDirectories[i], customLevel, this));
             }
             else
             {
                 Plugin.LogWarning(
-                    $"Skipping folder {chartPath} as its trackref '{customLevel.trackRef}' was already loaded!");
+                    $"Skipping folder {songDirectories[i]} as its trackref '{customLevel.trackRef}' was already loaded!");
             }
-        }
+        });
+        return tracks;
     }
 
     public SavedLevel ReloadTrack(CustomTrack existing)
     {
         var chartPath = Path.Combine(existing.folderPath, Globals.defaultChartName);
-        using var stream = File.OpenText(chartPath);
-        using var reader = new JsonTextReader(stream);
 
-        var track = _serializer.Deserialize<CustomTrackData>(reader);
-
+        var track = JsonConvert.DeserializeObject<CustomTrackData>(File.ReadAllText(chartPath));
         return track?.ToSavedLevel();
     }
 
