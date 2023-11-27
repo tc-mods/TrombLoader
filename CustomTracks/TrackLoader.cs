@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using BaboonAPI.Hooks.Tracks;
@@ -38,7 +39,7 @@ public class TrackLoader : TrackRegistrationEvent.Listener
                 customLevel = JsonConvert.DeserializeObject<CustomTrackData>(File.ReadAllText(tmbDirectories[i]), new JsonSerializerSettings()
                 {
                     Context = new StreamingContext(StreamingContextStates.File, chartName)
-                });
+                }) ?? throw new Exception("Deserializer returned unexpected null value.");
             }
             catch (Exception exc)
             {
@@ -61,7 +62,7 @@ public class TrackLoader : TrackRegistrationEvent.Listener
         });
         sw.Stop();
         Plugin.LogInfo($"{tracks.Count} charts were loaded in {sw.Elapsed.TotalMilliseconds:0.00}ms");
-        return tracks;
+        return tracks.Where(x => x != null);
     }
 
     public SavedLevel ReloadTrack(CustomTrack existing)
