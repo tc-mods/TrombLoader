@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Threading.Tasks;
 using BaboonAPI.Hooks.Tracks;
 using Newtonsoft.Json;
 using TrombLoader.Helpers;
@@ -28,7 +27,7 @@ public class TrackLoader : TrackRegistrationEvent.Listener
         var seen = new HashSet<string>();
 
         //For some reasons more thread ends up being much slower even than single threading, but using a low thread count makes it much faster
-        Parallel.For(0, tmbDirectories.Length, new ParallelOptions() { MaxDegreeOfParallelism = 2 }, i =>
+        for(int i = 0; i < tmbDirectories.Length; i++)
         {
             CustomTrackData customLevel;
             string dirName;
@@ -45,7 +44,7 @@ public class TrackLoader : TrackRegistrationEvent.Listener
             {
                 Plugin.LogWarning($"Unable to deserialize JSON of custom chart: {tmbDirectories[i]}");
                 Plugin.LogWarning(exc.Message);
-                return;
+                continue;
             }
 
             if (seen.Add(customLevel.trackRef))
@@ -59,7 +58,7 @@ public class TrackLoader : TrackRegistrationEvent.Listener
                 Plugin.LogWarning(
                     $"Skipping folder {dirName} as its trackref '{customLevel.trackRef}' was already loaded!");
             }
-        });
+        };
         sw.Stop();
         Plugin.LogInfo($"{tracks.Count} charts were loaded in {sw.Elapsed.TotalMilliseconds:0.00}ms");
         return tracks.Where(x => x != null);
