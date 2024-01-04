@@ -27,6 +27,7 @@ namespace TrombLoader.Data
         public UnityEvent PlayerTootInputEnd;
         public UnityEvent ChampModeActivated;
         public UnityEvent ChampModeDeactivated;
+        public UnityEvent OutOfBreath;
 
         public IntEvent ComboUpdated;
         public Vector3Event MousePositionUpdated;
