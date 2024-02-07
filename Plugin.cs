@@ -50,8 +50,12 @@ namespace TrombLoader
 
         public IEnumerator GetAudioClipSync(string path, Action callback = null)
         {
-            path = "file://" + Path.GetFullPath(path);
-            UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(path, AudioType.OGGVORBIS);
+            var uri = new UriBuilder(Uri.UriSchemeFile, string.Empty)
+            {
+                Path = path
+            }.Uri;
+
+            var www = UnityWebRequestMultimedia.GetAudioClip(uri, AudioType.OGGVORBIS);
             ((DownloadHandlerAudioClip)www.downloadHandler).streamAudio = true;
             yield return www.SendWebRequest();
             while (!www.isDone)
