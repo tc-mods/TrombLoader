@@ -38,6 +38,15 @@ public class VideoBackground : HijackedBackground
         _videoPlayer.enabled = true;
         _videoPlayer.Pause();
 
+        if (GlobalVariables.practicemode != 1f)
+        {
+            _videoPlayer.playbackSpeed = GlobalVariables.practicemode;
+        }
+        else if (GlobalVariables.turbomode)
+        {
+            _videoPlayer.playbackSpeed = 2f;
+        }
+
         controller.StartCoroutine(PlayVideoDelayed(_videoPlayer).GetEnumerator());
     }
 
