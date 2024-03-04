@@ -9,7 +9,7 @@ namespace TrombLoader.CustomTracks.Backgrounds;
 public abstract class HijackedBackground : AbstractBackground
 {
     protected HijackedBackground() :
-        base(AssetBundle.LoadFromFile($"{Application.streamingAssetsPath}/trackassets/ballgame"))
+        base(AssetBundle.LoadFromFile($"{Application.streamingAssetsPath}/trackassets/ballgame/contentbundle"))
     {
     }
 
