@@ -48,8 +48,6 @@ public class TrackLoader: TrackRegistrationEvent.Listener
 
             if (seen.Add(customLevel.trackRef))
             {
-                Plugin.LogDebug($"Found custom chart: {customLevel.trackRef}");
-
                 yield return new CustomTrack(songFolder, customLevel, this);
             }
             else
