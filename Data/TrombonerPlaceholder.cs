@@ -11,6 +11,7 @@ namespace TrombLoader.Data
         public TromboneLength TromboneLength = TromboneLength.DoNotOverride;
         public TromboneHat TromboneHat = TromboneHat.DoNotOverride;
         public TrombonerMovementType MovementType = TrombonerMovementType.DoNotOverride;
+        public TrombonerDanceMode DanceMode = TrombonerDanceMode.DoNotOverride;
 
         [HideInInspector, SerializeField]
         public int InstanceID = 0;
@@ -108,5 +109,16 @@ namespace TrombLoader.Data
         Jubilant = 0,
         [InspectorName("Estudious")]
         Estudious = 1,
+    }
+
+    [Serializable]
+    public enum TrombonerDanceMode
+    {
+        [InspectorName("Do Not Override (Default)")]
+        DoNotOverride = -1,
+        [InspectorName("Auto Dance")]
+        AutoDance = 0,
+        [InspectorName("Manual Dance")]
+        ManualDance = 1,
     }
 }

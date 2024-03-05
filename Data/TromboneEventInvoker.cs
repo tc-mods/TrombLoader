@@ -21,6 +21,8 @@ namespace TrombLoader.Data
         private int previousCombo = 0;
         private int previousBGDataIndex = 0;
         private bool currentInputState = false;
+        private bool currentChampState = false;
+        private bool outOfBreath = false;
 
         public void InitializeInvoker(GameController controller, TromboneEventManager[] eventManagers)
         {
@@ -110,6 +112,27 @@ namespace TrombLoader.Data
                 {
                     currentInputState = false;
                     foreach (var manager in _eventManagers) manager.PlayerTootInputEnd?.Invoke();
+                }
+            }
+
+            // champ mode on/off events
+            if (_controller.rainbowcontroller.champmode != currentChampState)
+            {
+                currentChampState = _controller.rainbowcontroller.champmode;
+                foreach (var manager in _eventManagers)
+                {
+                    if (currentChampState) manager.ChampModeActivated?.Invoke();
+                    else manager.ChampModeDeactivated?.Invoke();
+                }
+            }
+
+            // out of breath event
+            if (_controller.outofbreath != outOfBreath)
+            {
+                outOfBreath = _controller.outofbreath;
+                foreach (var manager in _eventManagers)
+                {
+                    if (outOfBreath) manager.OutOfBreath?.Invoke();
                 }
             }
         }
