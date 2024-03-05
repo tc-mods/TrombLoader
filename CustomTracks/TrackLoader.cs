@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -15,6 +16,7 @@ public class TrackLoader: TrackRegistrationEvent.Listener
 
     public IEnumerable<TromboneTrack> OnRegisterTracks()
     {
+        Stopwatch sw = Stopwatch.StartNew();
         CreateMissingDirectories();
 
         var songs = Directory.GetFiles(Globals.GetCustomSongsPath(), "song.tmb", SearchOption.AllDirectories)
@@ -56,6 +58,8 @@ public class TrackLoader: TrackRegistrationEvent.Listener
                     $"Skipping folder {chartPath} as its trackref '{customLevel.trackRef}' was already loaded!");
             }
         }
+        sw.Stop();
+        Plugin.LogInfo($"{seen.Count} charts were loaded in {sw.Elapsed.TotalMilliseconds:0.00}ms");
     }
 
     public SavedLevel ReloadTrack(CustomTrack existing)
