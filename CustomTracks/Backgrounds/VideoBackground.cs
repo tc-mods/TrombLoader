@@ -14,7 +14,7 @@ public class VideoBackground : HijackedBackground
     {
         _videoPath = videoPath;
     }
-    
+
     public override void SetUpBackground(BGController controller, GameObject bg)
     {
         DisableParts(bg);
@@ -56,10 +56,6 @@ public class VideoBackground : HijackedBackground
     public static IEnumerable<YieldInstruction> PlayVideoDelayed(VideoPlayer videoPlayer)
     {
         yield return new WaitForSeconds(2.4f);
-
-        if (videoPlayer != null)
-        {
-            videoPlayer.Play();
-        }
+        videoPlayer?.Play();
     }
 }
