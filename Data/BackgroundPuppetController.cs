@@ -32,6 +32,17 @@ public class BackgroundPuppetController : MonoBehaviour
         }
     }
 
+    public void DoManualDance(float amount)
+    {
+        foreach (var tromboner in Tromboners)
+        {
+            if (tromboner.placeholder.DanceMode == TrombonerDanceMode.ManualDance)
+            {
+                tromboner.controller.doManualDance(amount);
+            }
+        }
+    }
+
     public void SetPuppetBreath(bool hasBreath)
     {
         foreach (var tromboner in Tromboners)

@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
 using TrombLoader.Data;
+using UnityEngine;
 
 namespace TrombLoader.Patch
 {
@@ -42,6 +43,22 @@ namespace TrombLoader.Patch
             var puppetController = controller.bgcontroller.fullbgobject.GetComponent<BackgroundPuppetController>();
             // Multiply by 2 here to match basegame
             if (puppetController != null) puppetController.DoPuppetControl(vp * 2f, vibratoAmount);
+        }
+        
+        static void Postfix(GameController __instance)
+        {
+            var puppetController = __instance.bgcontroller.fullbgobject.GetComponent<BackgroundPuppetController>();
+            if (puppetController != null)
+            {
+                if (GlobalVariables.localsettings.mousecontrolmode <= 1)
+                {
+                    puppetController.DoManualDance(Input.GetAxis("Mouse X") * 1.25f * GlobalVariables.localsettings.sensitivity);
+                }
+                else
+                {
+                    puppetController.DoManualDance(Input.GetAxis("Mouse Y") * -1.25f * GlobalVariables.localsettings.sensitivity);
+                }
+            }
         }
 
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)

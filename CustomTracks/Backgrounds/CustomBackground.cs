@@ -207,6 +207,12 @@ public class CustomBackground : AbstractBackground
             {
                 tromboner.controller.show_rainbow = true;
             }
+
+            if (tromboner.placeholder.DanceMode == TrombonerDanceMode.DoNotOverride
+                && GlobalVariables.localsave.manual_dance)
+            {
+                tromboner.placeholder.DanceMode = TrombonerDanceMode.ManualDance;
+            }
         }
     }
 

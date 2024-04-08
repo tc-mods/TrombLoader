@@ -60,20 +60,15 @@ public class TrackLoader: TrackRegistrationEvent.Listener
         }
     }
 
-    public SavedLevel ReloadTrack(CustomTrack existing)
+    public SavedLevel LoadChartData(string folderPath, CustomTrackData data)
     {
-        var chartPath = Path.Combine(existing.folderPath, Globals.defaultChartName);
+        var chartPath = Path.Combine(folderPath, Globals.defaultChartName);
         using var stream = File.OpenText(chartPath);
         using var reader = new JsonTextReader(stream);
 
-        var track = _serializer.Deserialize<CustomTrackData>(reader);
-
-        return track?.ToSavedLevel();
-    }
-
-    public bool ShouldReloadChart()
-    {
-        return Plugin.Instance.DeveloperMode.Value;
+        _serializer.Context = new StreamingContext(StreamingContextStates.File, data.trackRef);
+        var track = _serializer.Deserialize<ChartData>(reader);
+        return track?.ToSavedLevel(data);
     }
 
     private static void CreateMissingDirectories()
