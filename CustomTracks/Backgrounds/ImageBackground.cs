@@ -46,7 +46,6 @@ public class ImageBackground : HijackedBackground
         }
         else
         {
-            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
             var pixels = renderer.sprite.texture.GetPixels();
             int total = pixels.Length;
 
