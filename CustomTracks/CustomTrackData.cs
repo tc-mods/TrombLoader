@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace TrombLoader.CustomTracks;
 
@@ -18,4 +18,6 @@ public class CustomTrackData
     [JsonRequired] public int difficulty;
     [JsonRequired] public float tempo;
     public string backgroundMovement = "none";
+
+    public Dictionary<Identifier, JObject> custom_data = new();
 }

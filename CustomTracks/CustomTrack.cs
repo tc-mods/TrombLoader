@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using BaboonAPI.Hooks.Tracks;
 using BaboonAPI.Utility;
+using JetBrains.Annotations;
 using Microsoft.FSharp.Core;
 using TrombLoader.CustomTracks.Backgrounds;
 using TrombLoader.Helpers;
@@ -34,6 +35,17 @@ public class CustomTrack : TromboneTrack, Previewable
         this.folderPath = folderPath;
         _data = data;
         _loader = loader;
+    }
+
+    /// <summary>
+    /// Get custom data for an identifier
+    /// </summary>
+    /// <param name="identifier">Key for the data property</param>
+    /// <returns>Custom data for the specified identifier, if present on the track, otherwise null</returns>
+    [CanBeNull]
+    public ExtraData GetCustomData(Identifier identifier)
+    {
+        return _data.custom_data.TryGetValue(identifier, out var data) ? new ExtraData(identifier, data) : null;
     }
 
     public SavedLevel LoadChart()
