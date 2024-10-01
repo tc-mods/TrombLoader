@@ -11,6 +11,7 @@ public class EmptyBackground : HijackedBackground
     public override void SetUpBackground(BGController controller, GameObject bg)
     {
         DisableParts(bg);
+        bg.GetComponent<Camera>().backgroundColor = Color.black;
     }
 
     public override bool CanResume => true;
