@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -22,7 +23,7 @@ public class TrackLoader: TrackRegistrationEvent.Listener
             .Select(i => Path.GetDirectoryName(i));
 
         var seen = new HashSet<string>();
-        var start = DateTime.Now;
+        var sw = Stopwatch.StartNew();
         foreach (var songFolder in songs)
         {
             var chartPath = Path.Combine(songFolder, Globals.defaultChartName);
@@ -57,7 +58,9 @@ public class TrackLoader: TrackRegistrationEvent.Listener
                     $"Skipping folder {chartPath} as its trackref '{customLevel.trackRef}' was already loaded!");
             }
         }
-        Plugin.LogInfo($"Loaded tracks in {DateTime.Now - start}");
+
+        sw.Stop();
+        Plugin.LogInfo($"Loaded tracks in {sw.Elapsed.TotalSeconds} seconds");
     }
 
     public SavedLevel LoadChartData(string folderPath, CustomTrackData data)
