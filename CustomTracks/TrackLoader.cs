@@ -22,6 +22,7 @@ public class TrackLoader: TrackRegistrationEvent.Listener
             .Select(i => Path.GetDirectoryName(i));
 
         var seen = new HashSet<string>();
+        var start = DateTime.Now;
         foreach (var songFolder in songs)
         {
             var chartPath = Path.Combine(songFolder, Globals.defaultChartName);
@@ -48,8 +49,6 @@ public class TrackLoader: TrackRegistrationEvent.Listener
 
             if (seen.Add(customLevel.trackRef))
             {
-                Plugin.LogDebug($"Found custom chart: {customLevel.trackRef}");
-
                 yield return new CustomTrack(songFolder, customLevel, this);
             }
             else
@@ -58,6 +57,7 @@ public class TrackLoader: TrackRegistrationEvent.Listener
                     $"Skipping folder {chartPath} as its trackref '{customLevel.trackRef}' was already loaded!");
             }
         }
+        Plugin.LogInfo($"Loaded tracks in {DateTime.Now - start}");
     }
 
     public SavedLevel LoadChartData(string folderPath, CustomTrackData data)
