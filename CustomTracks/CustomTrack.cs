@@ -84,7 +84,7 @@ public class CustomTrack : TromboneTrack, Previewable
         }
 
         var possibleVideoPath = Path.Combine(folderPath, "bg.mp4");
-        if (File.Exists(possibleVideoPath))
+        if (File.Exists(possibleVideoPath) && !(GlobalVariables.turbomode && Plugin.Instance.turboBackgroundFallback.Value))
         {
             return new VideoBackground(possibleVideoPath);
         }
