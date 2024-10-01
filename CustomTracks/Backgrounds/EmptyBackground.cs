@@ -4,7 +4,7 @@ using UnityEngine;
 namespace TrombLoader.CustomTracks.Backgrounds;
 
 /// <summary>
-///  Background used when a custom track doesn't specify one. Ends up being a grey slab.
+///  Background used when a custom track doesn't specify one. Ends up being black.
 /// </summary>
 public class EmptyBackground : HijackedBackground
 {
