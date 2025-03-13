@@ -57,6 +57,7 @@ namespace TrombLoader
             TrackCollectionRegistrationEvent.EVENT.Register(new TrombLoaderCollection.CollectionLoader(this));
 
             ShaderHelper = new();
+            QualitySettings.pixelLightCount = 16;
         }
 
         private void TryInitialize()
