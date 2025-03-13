@@ -104,7 +104,7 @@ public class CustomTrack : TromboneTrack, Previewable, FilesystemTrack
         return true;
     }
 
-    public class LoadedCustomTrack : LoadedTromboneTrack, PauseAware
+    public class LoadedCustomTrack : LoadedTromboneTrack, AsyncAudioAware, PauseAware
     {
         private readonly CustomTrack _parent;
         private readonly AbstractBackground _background;
@@ -135,6 +135,17 @@ public class CustomTrack : TromboneTrack, Previewable, FilesystemTrack
 
             Plugin.LogError("Failed to load audio");
             return null;
+        }
+
+
+        Coroutines.YieldTask<FSharpResult<TrackAudio, string>> AsyncAudioAware.LoadAudio()
+        {
+            var songPath = Path.Combine(_parent.folderPath, Globals.defaultAudioName);
+
+            var task = BaboonAPI.Utility.Unity.loadAudioClip(songPath, AudioType.OGGVORBIS);
+            return Coroutines.map(FuncConvert.FromFunc((FSharpResult<AudioClip, string> res) =>
+                ResultModule.Map(FuncConvert.FromFunc((AudioClip clip) =>
+                    new TrackAudio(clip, 1f)), res)), task);
         }
 
         public GameObject LoadBackground(BackgroundContext ctx)
