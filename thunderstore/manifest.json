@@ -4,7 +4,7 @@
   "version_number": "2.4.0",
   "dependencies": [
     "BepInEx-BepInExPack_TromboneChamp-5.4.21",
-    "TromboneChamps-BaboonAPI-2.5.0"
+    "TromboneChamps-BaboonAPI-2.8.0"
   ],
   "website_url": "https://github.com/tc-mods/TrombLoader"
 }
