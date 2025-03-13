@@ -54,6 +54,7 @@ namespace TrombLoader
 
             GameInitializationEvent.Register(Info, TryInitialize);
             TrackRegistrationEvent.EVENT.Register(new TrackLoader());
+            TrackCollectionRegistrationEvent.EVENT.Register(new TrombLoaderCollection.CollectionLoader(this));
 
             ShaderHelper = new();
         }

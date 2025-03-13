@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace TrombLoader.CustomTracks;
 
-public class CustomTrack : TromboneTrack, Previewable
+public class CustomTrack : TromboneTrack, Previewable, FilesystemTrack
 {
     /// <summary>
     ///  Folder path that this track can be found at

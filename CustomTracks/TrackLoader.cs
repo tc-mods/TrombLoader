@@ -20,7 +20,7 @@ public class TrackLoader: TrackRegistrationEvent.Listener
 
         var songs = Directory.GetFiles(Globals.GetCustomSongsPath(), "song.tmb", SearchOption.AllDirectories)
             .Concat(Directory.GetFiles(BepInEx.Paths.PluginPath, "song.tmb", SearchOption.AllDirectories))
-            .Select(i => Path.GetDirectoryName(i));
+            .Select(Path.GetDirectoryName);
 
         var seen = new HashSet<string>();
         var sw = Stopwatch.StartNew();
