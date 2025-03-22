@@ -98,7 +98,7 @@ namespace TrombLoader.Data
                 if (Input.GetKey(toot_key)) keysActive++;
             }
 
-            if(keysActive == 1 || Input.GetMouseButton(0))
+            if(keysActive == 1 || (Input.GetMouseButton(0) && !GlobalVariables.localsettings.disable_mouse_tooting))
             {
                 if(currentInputState == false)
                 {
