@@ -92,13 +92,11 @@ namespace TrombLoader.Data
             }
 
             // input start/end events
-            int keysActive = 0;
-            foreach(var toot_key in _controller.toot_keys)
-            {
-                if (Input.GetKey(toot_key)) keysActive++;
-            }
-
-            if(keysActive == 1 || Input.GetMouseButton(0))
+            // We use `notebuttonpressed` here, over `isNoteButtonPressed()`, to preserve the game's behavior of
+            // releasing for one frame when, say, going from one key down to two keys down. Calling
+            // `isNoteButtonPressed()` multiple times in a frame (once in GameController, and again here) would break
+            // that.
+            if (_controller.notebuttonpressed)
             {
                 if(currentInputState == false)
                 {
