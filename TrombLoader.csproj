@@ -39,7 +39,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="TromboneChamp.GameLibs" Version="1.25.0" />
+        <PackageReference Include="TromboneChamp.GameLibs" Version="1.26.0" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(Configuration)' != 'Editor'">

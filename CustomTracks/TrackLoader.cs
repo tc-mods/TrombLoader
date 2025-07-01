@@ -10,7 +10,7 @@ using TrombLoader.Helpers;
 
 namespace TrombLoader.CustomTracks;
 
-public class TrackLoader: TrackRegistrationEvent.Listener
+public class TrackLoader : TrackRegistrationEvent.Listener
 {
     private JsonSerializer _serializer = new();
 
@@ -18,8 +18,8 @@ public class TrackLoader: TrackRegistrationEvent.Listener
     {
         CreateMissingDirectories();
 
-        var songs = Directory.GetFiles(Globals.GetCustomSongsPath(), "song.tmb", SearchOption.AllDirectories)
-            .Concat(Directory.GetFiles(BepInEx.Paths.PluginPath, "song.tmb", SearchOption.AllDirectories))
+        var songs = GetSearchPaths()
+            .SelectMany(searchPath => Directory.GetFiles(searchPath, Globals.defaultChartName, SearchOption.AllDirectories))
             .Select(Path.GetDirectoryName);
 
         var seen = new HashSet<string>();
@@ -73,6 +73,17 @@ public class TrackLoader: TrackRegistrationEvent.Listener
         var track = _serializer.Deserialize<ChartData>(reader);
         return track?.ToSavedLevel(data);
     }
+
+    /// <summary>
+    /// Get all paths to search for `song.tmb` files
+    /// </summary>
+    /// <returns>A list of folders to recursively search for song.tmb files</returns>
+    private string[] GetSearchPaths() =>
+    [
+        Globals.GetCustomSongsPath(),
+        BepInEx.Paths.PluginPath,
+        GlobalVariables.localsettings.collections_workshop_path,
+    ];
 
     private static void CreateMissingDirectories()
     {
