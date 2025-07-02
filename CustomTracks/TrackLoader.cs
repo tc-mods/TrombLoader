@@ -19,7 +19,7 @@ public class TrackLoader : TrackRegistrationEvent.Listener
         CreateMissingDirectories();
 
         var songs = GetSearchPaths()
-            .SelectMany(searchPath => Directory.GetFiles(searchPath, Globals.defaultChartName, SearchOption.AllDirectories))
+            .SelectMany(searchPath => Directory.EnumerateFiles(searchPath, Globals.defaultChartName, SearchOption.AllDirectories))
             .Select(Path.GetDirectoryName);
 
         var seen = new HashSet<string>();
