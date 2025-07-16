@@ -15,6 +15,10 @@ public class CustomTrack : TromboneTrack, Previewable, FilesystemTrack
     ///  Folder path that this track can be found at
     /// </summary>
     public string folderPath { get; }
+    /// <summary>
+    /// Source this track was loaded from
+    /// </summary>
+    public TrackSource source { get; }
 
     private readonly CustomTrackData _data;
     private readonly TrackLoader _loader;
@@ -30,9 +34,10 @@ public class CustomTrack : TromboneTrack, Previewable, FilesystemTrack
     public int tempo => (int) _data.tempo;
     public int length => Mathf.FloorToInt(_data.endpoint / (_data.tempo / 60f));
 
-    public CustomTrack(string folderPath, CustomTrackData data, TrackLoader loader)
+    public CustomTrack(string folderPath, CustomTrackData data, TrackLoader loader, TrackSource source)
     {
         this.folderPath = folderPath;
+        this.source = source;
         _data = data;
         _loader = loader;
     }

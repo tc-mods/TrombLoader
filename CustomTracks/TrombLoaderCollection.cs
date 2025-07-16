@@ -5,7 +5,6 @@ using BaboonAPI.Hooks.Tracks;
 using BaboonAPI.Hooks.Tracks.Collections;
 using BaboonAPI.Utility;
 using Microsoft.FSharp.Core;
-using TrombLoader.Helpers;
 using UnityEngine;
 
 namespace TrombLoader.CustomTracks;
@@ -23,7 +22,7 @@ public class TrombLoaderCollection : BaseTromboneCollection
 
     public override IEnumerable<TromboneTrack> BuildTrackList()
     {
-        return TrackLookup.allTracks().Where(track => track is CustomTrack);
+        return TrackLookup.allTracks().Where(track => track is CustomTrack { source: TrackSource.TrombLoader });
     }
 
     public override Coroutines.YieldTask<FSharpResult<Sprite, string>> LoadSprite()

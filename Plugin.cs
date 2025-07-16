@@ -35,7 +35,7 @@ namespace TrombLoader
             var customFile = new ConfigFile(Path.Combine(Paths.ConfigPath, "TrombLoader.cfg"), true);
             beatsToShow = customFile.Bind("General", "Note Display Limit", 64, "The maximum amount of notes displayed on screen at once.");
             var backgrounds = new List<string>{"freeplay", "freeplay-static", "grey", "black"};
-            DefaultBackground = customFile.Bind("General", "Default Background", "freeplay", 
+            DefaultBackground = customFile.Bind("General", "Default Background", "freeplay",
                 $"The default background to show when a chart does not include one. Can be one of the following:\n{string.Join(", ", backgrounds)}");
             DefaultBackground.Value = DefaultBackground.Value.ToLower().Trim();
             if (!backgrounds.Contains(DefaultBackground.Value))
@@ -53,7 +53,11 @@ namespace TrombLoader
             LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
 
             GameInitializationEvent.Register(Info, TryInitialize);
-            TrackRegistrationEvent.EVENT.Register(new TrackLoader());
+
+            var loader = new TrackLoader();
+            TrackRegistrationEvent.EVENT.Register(loader);
+            CustomTrackLoaderEvent.EVENT.Register(loader);
+
             TrackCollectionRegistrationEvent.EVENT.Register(new TrombLoaderCollection.CollectionLoader(this));
 
             ShaderHelper = new();
