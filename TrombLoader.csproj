@@ -3,7 +3,7 @@
         <TargetFramework>net472</TargetFramework>
         <AssemblyName>TrombLoader</AssemblyName>
         <Description>Trombone Champ Custom Chart Loader</Description>
-        <Version>2.4.1</Version>
+        <Version>2.4.2</Version>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <LangVersion>latest</LangVersion>
 
@@ -14,7 +14,7 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageIcon>icon.png</PackageIcon>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <RepositoryUrl>https://github.com/NyxTheShield/TrombLoader</RepositoryUrl>
+        <RepositoryUrl>https://github.com/tc-mods/TrombLoader</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <DefaultLanguage>en</DefaultLanguage>
     </PropertyGroup>
@@ -43,7 +43,7 @@
     </ItemGroup>
 
     <ItemGroup Condition="'$(Configuration)' != 'Editor'">
-        <PackageReference Include="TromboneChamp.BaboonAPI" Version="2.8.0" />
+        <PackageReference Include="TromboneChamp.BaboonAPI" Version="2.10.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     </ItemGroup>
 
