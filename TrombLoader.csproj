@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
+        <Configurations>Debug;Release;Editor</Configurations>
         <TargetFramework>net472</TargetFramework>
         <AssemblyName>TrombLoader</AssemblyName>
         <Description>Trombone Champ Custom Chart Loader</Description>
@@ -23,6 +24,10 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(Configuration)' == 'Editor' ">
+      <DefineConstants>$(DefineConstants);UNITY</DefineConstants>
+    </PropertyGroup>
+
     <ItemGroup Condition="'$(Configuration)' == 'Release'">
         <None Include="$(SolutionDir)thunderstore\README.md" Pack="true" PackagePath="\" />
         <None Include="$(SolutionDir)thunderstore\icon.png" Pack="true" PackagePath="\" />
@@ -32,28 +37,31 @@
         <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
         <PackageReference Include="BepInEx.Core" Version="5.*" />
         <PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
+
+        <PackageReference Include="TromboneChamp.GameLibs" Version="1.26.0" />
+        <PackageReference Include="TromboneChamp.BaboonAPI" Version="2.10.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
         <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
     </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="TromboneChamp.GameLibs" Version="1.26.0" />
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(Configuration)' != 'Editor'">
-        <PackageReference Include="TromboneChamp.BaboonAPI" Version="2.10.0" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    </ItemGroup>
-
     <ItemGroup Condition="'$(Configuration)' == 'Editor'">
+        <Reference Include="UnityEditor">
+            <HintPath>lib\UnityEditor.dll</HintPath>
+        </Reference>
+        <!-- Use gamelibs with PrivateAssets set to avoid exporting references -->
+        <PackageReference Include="TromboneChamp.GameLibs" Version="1.26.0" PrivateAssets="all" />
+
         <Compile Remove="Plugin.cs" />
         <Compile Remove="CustomTracks/**" />
         <Compile Remove="Patch/**" />
         <Compile Remove="Helpers/Globals.cs" />
         <Compile Remove="Helpers/ShaderHelper.cs" />
         <Compile Remove="Data/TromboneEventInvoker.cs" />
+        <Compile Remove="Data/Tromboner.cs" />
+        <Compile Remove="Data/*PuppetController.cs" />
     </ItemGroup>
 
     <ItemGroup>
