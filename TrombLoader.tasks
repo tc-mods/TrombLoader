@@ -1,0 +1,16 @@
+<Project>
+    <UsingTask TaskName="CopyManifest" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+        <ParameterGroup>
+            <SourceFile ParameterType="System.String" Required="true"/>
+            <Destination ParameterType="System.String" Required="true"/>
+            <Version ParameterType="System.String" Required="true"/>
+        </ParameterGroup>
+        <Task>
+            <Using Namespace="System"/>
+            <Using Namespace="System.IO"/>
+            <Code Type="Fragment" Language="cs">
+                <![CDATA[File.WriteAllText(Destination, File.ReadAllText(SourceFile).Replace("@version@", Version));]]>
+            </Code>
+        </Task>
+    </UsingTask>
+</Project>
