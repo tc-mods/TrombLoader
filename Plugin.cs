@@ -17,7 +17,7 @@ using UnityEngine.SceneManagement;
 namespace TrombLoader
 {
     [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
-    [BepInDependency("ch.offbeatwit.baboonapi.plugin", "2.1.0")]
+    [BepInDependency("ch.offbeatwit.baboonapi.plugin", "2.10.0")]
     public class Plugin : BaseUnityPlugin
     {
         public static Plugin Instance;

@@ -25,22 +25,11 @@ public class TrackLoader : TrackRegistrationEvent.Listener, CustomTrackLoader
                 Directory.EnumerateFiles(searchPath, Globals.defaultChartName, SearchOption.AllDirectories))
             .Select(Path.GetDirectoryName);
 
-        var seen = new HashSet<string>();
         var sw = Stopwatch.StartNew();
         foreach (var songFolder in songs)
         {
             var track = LoadCustomTrack(songFolder, TrackSource.TrombLoader);
-            if (track == null) continue;
-
-            if (seen.Add(track.trackref))
-            {
-                yield return track;
-            }
-            else
-            {
-                Plugin.LogWarning(
-                    $"Skipping folder {songFolder} as its trackref '{track.trackref}' was already loaded!");
-            }
+            if (track != null) yield return track;
         }
 
         sw.Stop();
