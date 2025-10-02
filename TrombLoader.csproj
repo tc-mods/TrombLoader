@@ -40,7 +40,7 @@
         <PackageReference Include="BepInEx.Core" Version="5.*" />
         <PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
 
-        <PackageReference Include="TromboneChamp.GameLibs" Version="1.26.0" />
+        <PackageReference Include="TromboneChamp.GameLibs" Version="1.28.0-beta" />
         <PackageReference Include="TromboneChamp.BaboonAPI" Version="2.10.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     </ItemGroup>

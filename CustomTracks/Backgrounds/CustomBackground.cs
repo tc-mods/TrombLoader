@@ -82,10 +82,6 @@ public class CustomBackground : AbstractBackground
         var breathCanvas = ctx.controller.bottombreath.transform.parent.parent.GetComponent<Canvas>();
         if (breathCanvas != null) breathCanvas.planeDistance = 2;
 
-        var champCanvas = ctx.controller.champcontroller.letters[0].transform.parent.parent.parent
-            .GetComponent<Canvas>();
-        if (champCanvas != null) champCanvas.planeDistance = 2;
-
         var gameplayCam = GameObject.Find("GameplayCam")?.GetComponent<Camera>();
         if (gameplayCam != null) gameplayCam.depth = 99;
 
