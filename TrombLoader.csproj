@@ -6,7 +6,7 @@
         <TargetFramework>net472</TargetFramework>
         <AssemblyName>TrombLoader</AssemblyName>
         <Description>Trombone Champ Custom Chart Loader</Description>
-        <Version>2.4.3</Version>
+        <Version>2.4.4</Version>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <LangVersion>latest</LangVersion>
 
