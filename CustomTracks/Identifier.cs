@@ -1,9 +1,12 @@
 using System;
+using System.ComponentModel;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 
 namespace TrombLoader.CustomTracks;
 
+[TypeConverter(typeof(IdentifierTypeConverter))]
 public class Identifier
 {
     private static readonly Regex IdentifierRegex = new(@"^([a-zA-Z_-]+):([a-zA-Z0-9_-]+)$");
@@ -23,8 +26,8 @@ public class Identifier
         var m = IdentifierRegex.Match(identifier);
         if (!m.Success) throw new ArgumentException("Invalid identifier string: " + identifier);
 
-        Namespace = m.Captures[0].Value;
-        Path = m.Captures[1].Value;
+        Namespace = m.Groups[1].Value;
+        Path = m.Groups[2].Value;
     }
 
     public override string ToString() => $"{Namespace}:{Path}";
@@ -51,4 +54,17 @@ public class Identifier
     }
 
     public static Identifier Parse(string identifier) => new(identifier);
+
+    /// <summary>
+    /// Needed to be able to use an <see cref="Identifier"/> as a dictionary key, when deserializing with Newtonsoft
+    /// JSON.NET
+    /// </summary>
+    private sealed class IdentifierTypeConverter : TypeConverter
+    {
+        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType) =>
+            sourceType == typeof(string);
+
+        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value) =>
+            new Identifier((string)value);
+    }
 }
